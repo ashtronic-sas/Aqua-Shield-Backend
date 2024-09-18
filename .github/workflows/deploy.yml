@@ -3,7 +3,7 @@ name: Deploy FastAPI Application to AWS Lambda
 on:
   push:
     branches:
-      - main
+      - deploy-branch
 
 jobs:
   deploy:
