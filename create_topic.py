@@ -3,9 +3,9 @@ import sys
 
 def create_sns_topic(topic_name):
     """Create an SNS topic if it doesn't already exist."""
-    # Create a client with AWS SNS
-    sns_client = boto3.client('sns')
-    
+    # Create a client with AWS SNS and specify the region
+    sns_client = boto3.client('sns', region_name='us-east-1')  # Asegúrate de usar la región adecuada
+
     # Attempt to create the topic
     try:
         response = sns_client.create_topic(Name=topic_name)
