@@ -2,8 +2,8 @@ name: Deploy User Service to AWS Lambda
 
 on:
   push:
-    branches: 
-      - main 
+    branches:
+      - deploy-branch
 
 jobs:
   CI:
