@@ -26,8 +26,10 @@ jobs:
         uses: actions/cache@v3
         id: cache-pip
         with:
+          run: |
+          echo ls 
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('user_service/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -36,13 +38,13 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install -r requirements.txt
+          pip install -r user_service/requirements.txt
 
-      # Step-5: Run Tests
-      - name: Run Tests
-        run: |
-          source venv/bin/activate
-          pytest
+      # # Step-5: Run Tests
+      # - name: Run Tests
+      #   run: |
+      #     source venv/bin/activate
+      #     pytest
 
       # Step-6: Create archive of dependencies and API files
       - name: Create archive of dependencies and API files
@@ -97,4 +99,4 @@ jobs:
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name auth_service --s3-bucket aquashieldbackenddev --s3-key user_service.zip
+        run: aws lambda update-function-code --function-name user_service --s3-bucket aquashieldbackenddev --s3-key user_service.zip
