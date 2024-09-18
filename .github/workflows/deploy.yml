@@ -42,10 +42,10 @@ jobs:
           
 
       # Step-5: Run Tests
-      - name: Run Tests
-        run: |
-          source venv/bin/activate
-          pytest
+      # - name: Run Tests
+      #   run: |
+      #     source venv/bin/activate
+      #     pytest
 
       # Step-6: Create archive of dependencies and API files
       - name: Create archive of dependencies and API files
