@@ -23,6 +23,13 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 
+
       - name: Create SNS Topic if not exists
         run: |
           source venv/bin/activate
@@ -34,13 +41,6 @@ jobs:
           cd app
           zip -r9 ../deployment_package.zip .
           echo "Packaged application to deployment_package.zip"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
 
       - name: Upload to AWS S3
         run: aws s3 cp deployment_package.zip s3://your-s3-bucket-name/deployment_package.zip
