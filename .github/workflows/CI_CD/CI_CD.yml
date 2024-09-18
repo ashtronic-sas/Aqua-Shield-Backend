@@ -27,7 +27,7 @@ jobs:
     - name: Zip the application
       run: |
         cd user_service
-        zip -r9 ../user_service.zip .
+        zip -r9 app/user_service.zip .
 
     - name: Upload to S3
       run: |
