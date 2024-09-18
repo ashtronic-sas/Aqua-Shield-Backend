@@ -64,4 +64,3 @@ jobs:
             echo "Function exists, updating..."
             aws lambda update-function-code --function-name your-lambda-function-name \
               --zip-file fileb://deployment_package.zip
-          fi
