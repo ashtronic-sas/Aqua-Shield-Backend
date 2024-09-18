@@ -6,7 +6,7 @@ from app.utils.database import get_db
 from app.auth.jwt_handler import create_access_token, decode_access_token
 from fastapi.security import OAuth2PasswordBearer
 from typing import Dict
-from app.models import User
+from user_service.app.utils.models import User
 from typing import List
 
 router = APIRouter(prefix="/users", tags=["users"])
