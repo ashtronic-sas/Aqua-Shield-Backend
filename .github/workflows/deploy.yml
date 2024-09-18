@@ -36,6 +36,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
+          cd user_service
           ls
           pip install -r requirements.txt
           
@@ -99,4 +100,4 @@ jobs:
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name auth_service --s3-bucket aquashieldbackenddev --s3-key user_service.zip
+        run: aws lambda update-function-code --function-name user_service --s3-bucket aquashieldbackenddev --s3-key user_service.zip
