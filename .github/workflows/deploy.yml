@@ -30,6 +30,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1 
 
+      - name: Print AWS Environment Info
+        run: |
+          echo "AWS Region: $AWS_REGION"
+          echo "AWS Default Region: $AWS_DEFAULT_REGION"
+          aws configure list
+
       - name: Create SNS Topic if not exists
         run: |
           source venv/bin/activate
