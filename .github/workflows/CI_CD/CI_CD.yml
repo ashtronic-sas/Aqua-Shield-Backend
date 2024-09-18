@@ -26,6 +26,8 @@ jobs:
         uses: actions/cache@v3
         id: cache-pip
         with:
+          run: |
+            ls
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('user_service/requirements.txt') }}
           restore-keys: |
@@ -97,4 +99,4 @@ jobs:
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name auth_service --s3-bucket aquashieldbackenddev --s3-key user_service.zip
+        run: aws lambda update-function-code --function-name user_service --s3-bucket aquashieldbackenddev --s3-key user_service.zip
