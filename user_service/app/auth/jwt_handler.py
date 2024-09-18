@@ -1,8 +1,12 @@
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Union, Dict
+import os
+from dotenv import load_dotenv
 
-SECRET_KEY = "47400c92991465683f995a754e4f9842cbb2aa1a518716b576dff3d2ab777851"
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
