@@ -1,15 +1,15 @@
-name: Deploy User Service to AWS Lambda
+name: Deploy FastAPI Application to AWS Lambda
 
 on:
   push:
     branches:
-      - deploy-branch
+      - main
 
 jobs:
-  CI:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -17,49 +17,23 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Cache pip dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('user_service/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
       - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install -r user_service/requirements.txt
+          pip install -r requirements.txt
 
-      - name: Create archive of dependencies
+      - name: Create SNS Topic if not exists
         run: |
           source venv/bin/activate
-          cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/dependencies.zip .
+          python create_topic.py your-topic-name
 
-      - name: Create API archive
+      - name: Package Application
         run: |
-          zip -r9 $GITHUB_WORKSPACE/api.zip -r user_service/app
-
-      - name: Upload layer to S3
-        run: aws s3 cp dependencies.zip s3://your-s3-bucket-name/layers/dependencies.zip
-
-      - name: Upload API to S3
-        run: aws s3 cp api.zip s3://your-s3-bucket-name/api.zip
-
-      - name: Create Lambda Layer
-        run: |
-          LAYER_ARN=$(aws lambda publish-layer-version --layer-name user-service-dependencies --content S3Bucket=your-s3-bucket-name,S3Key=layers/dependencies.zip --compatible-runtimes python3.10 | jq -r '.LayerVersionArn')
-          echo "LAYER_ARN=$LAYER_ARN" >> $GITHUB_ENV
-
-  CD:
-    runs-on: ubuntu-latest
-    needs: [CI]
-    environment: production
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+          source venv/bin/activate
+          cd app
+          zip -r9 ../deployment_package.zip .
+          echo "Packaged application to deployment_package.zip"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -68,11 +42,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Upload to AWS S3
+        run: aws s3 cp deployment_package.zip s3://your-s3-bucket-name/deployment_package.zip
+
       - name: Deploy Lambda Function
         run: |
-          aws lambda update-function-code --function-name user_service --s3-bucket your-s3-bucket-name --s3-key api.zip
-          aws lambda update-function-configuration --function-name user_service --layers ${{ env.LAYER_ARN }}
-
-      - name: Set API Gateway Trigger
-        run: |
-          aws lambda add-permission --function-name user_service --action lambda:InvokeFunction --principal apigateway.amazonaws.com --source-arn arn:aws:execute-api:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:api_id/*/GET/user_service
+          if aws lambda get-function --function-name your-lambda-function-name 2>&1 | grep -q 'ResourceNotFoundException'
+          then
+            echo "Function does not exist, creating..."
+            aws lambda create-function --function-name your-lambda-function-name \
+              --runtime python3.8 --role lambda-role-arn \
+              --handler your-handler --zip-file fileb://deployment_package.zip \
+              --environment Variables="{VAR1='value1',VAR2='value2'}"
+          else
+            echo "Function exists, updating..."
+            aws lambda update-function-code --function-name your-lambda-function-name \
+              --zip-file fileb://deployment_package.zip
+          fi
