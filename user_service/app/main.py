@@ -12,7 +12,7 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World!"}
+    return {"message": "Aquashield_backend_dev"}
 
 # Incluir los routers de las rutas
 app.include_router(user.router)
