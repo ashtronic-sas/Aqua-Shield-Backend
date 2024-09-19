@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI()
+app = FastAPI(root_path="/dev")
 
 # Configurar la información de la aplicación
 app.title = "AQUA SHIELD"
