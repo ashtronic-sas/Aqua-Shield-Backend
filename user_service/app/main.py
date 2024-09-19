@@ -10,8 +10,12 @@ Base.metadata.create_all(bind=engine)
 # Instanciar la aplicación de FastAPI
 app = FastAPI()
 
+@app.get("/")
+async def root():
+    return {"message": "Hello World!"}
+
 # Incluir los routers de las rutas
 app.include_router(user.router)
 
-handler = Mangum(app=app)
+handler = Mangum(app)
 
