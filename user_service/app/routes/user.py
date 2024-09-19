@@ -68,7 +68,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/{id}", response_model=UserOut)
-def read_users_me(id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def read_users(id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     Lee la información del usuario actual basado en su ID y token de autenticación.
 
@@ -117,7 +117,7 @@ def update_user(id: int, user: UserCreate, token: str = Depends(oauth2_scheme), 
     return db_user
 
 @router.delete("/{id}", response_model=Dict[str, str])
-def delete_user_me(id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def delete_user(id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     Eliminar el usuario actual por ID.
 
