@@ -36,7 +36,6 @@ jobs:
           python -m venv venv
           source venv/bin/activate
           cd user_service
-          ls
           pip install -r requirements.txt
           
       # Step-5: Run Tests
@@ -46,13 +45,10 @@ jobs:
       #     pytest
 
       # Step-6: Create archive of dependencies and API files
-      - name: Create archive of dependencies and API files
+      - name: Create archive of API files
         run: |
-          source venv/bin/activate
-          cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/user_service.zip .
-          cd $GITHUB_WORKSPACE
-          zip -g ./user_service.zip -r app
+          cd user_service
+          zip -r ../user_service.zip app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
         run: unzip -l user_service.zip
