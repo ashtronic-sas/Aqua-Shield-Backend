@@ -45,10 +45,13 @@ jobs:
       #     pytest
 
       # Step-6: Create archive of dependencies and API files
-      - name: Create archive of API files
+      - name: Create archive of dependencies and API files
         run: |
-          cd user_service
-          zip -r ../user_service.zip app
+          source venv/bin/activate
+          cd venv/lib/python3.10/site-packages
+          zip -r9 $GITHUB_WORKSPACE/user_service.zip .
+          cd $GITHUB_WORKSPACE/user_service
+          zip -g ./user_service.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
         run: unzip -l user_service.zip
