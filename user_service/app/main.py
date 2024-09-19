@@ -3,12 +3,22 @@ from sqlalchemy.orm import Session
 from app.routes import user
 from app.utils.database import engine, Base
 from mangum import Mangum
+from fastapi.middleware.cors import CORSMiddleware
 
 # Crear las tablas en la base de datos al iniciar
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
 app = FastAPI()
+
+# Configurar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Puedes especificar dominios específicos
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
