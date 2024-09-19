@@ -11,6 +11,12 @@ Base.metadata.create_all(bind=engine)
 # Instanciar la aplicación de FastAPI
 app = FastAPI(root_path="/dev")
 
+# Configurar la información de la aplicación
+app.title = "AQUA SHIELD"
+app.version = "0.0.2"
+app.description = "API for Aqua Shield"
+app.docs_url = "/"
+
 # Configurar CORS
 app.add_middleware(
     CORSMiddleware,
