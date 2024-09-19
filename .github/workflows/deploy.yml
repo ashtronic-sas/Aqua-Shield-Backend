@@ -50,10 +50,8 @@ jobs:
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
           zip -r9 $GITHUB_WORKSPACE/user_service.zip .
-          cd $GITHUB_WORKSPACE
-          cd user_service
-          ls
-          zip -g ./user_service.zip -r app
+          cd $GITHUB_WORKSPACE/user_service
+          zip -g $GITHUB_WORKSPACE/user_service.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
         run: unzip -l user_service.zip
