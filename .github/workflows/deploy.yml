@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,17 +31,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1 
 
-      - name: Print AWS Environment Info
-        run: |
-          echo "AWS Region: $AWS_REGION"
-          echo "AWS Default Region: $AWS_DEFAULT_REGION"
-          aws configure list
-
-      - name: Create SNS Topic if not exists
-        run: |
-          source venv/bin/activate
-          python create_topic.py your-topic-name
-
       - name: Package Application
         run: |
           source venv/bin/activate
@@ -48,19 +38,44 @@ jobs:
           zip -r9 ../deployment_package.zip .
           echo "Packaged application to deployment_package.zip"
 
-      - name: Upload to AWS S3
-        run: aws s3 cp deployment_package.zip s3://your-s3-bucket-name/deployment_package.zip
+      - name: Prepare Layer Directory
+        run: |
+          source venv/bin/activate
+          mkdir -p layer
+          pip install -r requirements.txt -t layer/
+          cd layer
+          zip -r9 ../dependencies-layer.zip .
+          echo "Packaged dependencies layer to dependencies-layer.zip"
+
+      - name: Publish Lambda Layer
+        id: publish_layer
+        run: |
+          LAYER_ARN=$(aws lambda publish-layer-version --layer-name my-dependencies-layer \
+            --zip-file fileb://dependencies-layer.zip \
+            --compatible-runtimes python3.8 \
+            --query 'LayerVersionArn' --output text)
+          echo "LAYER_ARN=$LAYER_ARN" >> $GITHUB_ENV
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
 
       - name: Deploy Lambda Function
         run: |
-          if aws lambda get-function --function-name your-lambda-function-name 2>&1 | grep -q 'ResourceNotFoundException'
+          if aws lambda get-function --function-name lambda-function-example 2>&1 | grep -q 'ResourceNotFoundException'
           then
             echo "Function does not exist, creating..."
-            aws lambda create-function --function-name your-lambda-function-name \
-              --runtime python3.8 --role lambda-role-arn \
-              --handler your-handler --zip-file fileb://deployment_package.zip \
+            aws lambda create-function --function-name lambda-function-example \
+              --runtime python3.8 --role arn:aws:iam::038462791127:role/lambda-role-arn \
+              --handler app.handler --zip-file fileb://deployment_package.zip \
               --environment Variables="{VAR1='value1',VAR2='value2'}"
           else
             echo "Function exists, updating..."
-            aws lambda update-function-code --function-name your-lambda-function-name \
+            aws lambda update-function-code --function-name lambda-function-example \
               --zip-file fileb://deployment_package.zip
+          fi
+          
+      - name: Update Lambda Configuration with Layer
+        run: |
+          aws lambda update-function-configuration --function-name lambda-function-example \
+            --layers ${{ env.LAYER_ARN }}
