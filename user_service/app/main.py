@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(root_path="/dev")
 
 # Configurar la información de la aplicación
-app.title = "Aqua Shield User Service"
+app.title = "Aqua Shield User Service V2"
 app.version = "0.0.2"
 app.description = "API for Aqua Shield"
 app.docs_url = "/"
