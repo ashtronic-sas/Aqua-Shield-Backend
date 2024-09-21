@@ -1,4 +1,4 @@
-from user_service.app.utils.models import User
+from app.utils.models import User
 from app.schemas.user import UserCreate
 from app.utils.database import get_db
 from app.utils.security import get_password_hash, verify_password

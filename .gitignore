@@ -1,7 +1,42 @@
-.venv
-.pytest_cache
-__pycache__
-.vscode
-venv
+# Archivos de Python
 *.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
 
+# Entornos virtuales
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Archivos de configuración de IDE
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Paquetes distribuidos
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Archivos de logs
+*.log
+*.pot
+
+# Archivos de pruebas
+.coverage
+.tox/
+.nox/
+pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Archivos de configuración de sistema operativo
+.DS_Store
