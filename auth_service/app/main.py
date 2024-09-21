@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
 from app.routes import auth
-from app.utils.database import engine, Base
+from app.config.database import engine, Base
 
 # Crear las tablas en la base de datos al iniciar
 Base.metadata.create_all(bind=engine)

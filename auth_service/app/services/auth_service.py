@@ -1,7 +1,7 @@
 from app.models import User
 from app.schemas.auth import UserCreate, UserLogin
-from app.utils.database import get_db
-from app.utils.security import get_password_hash, verify_password
+from app.config.database import get_db
+from app.config.security import get_password_hash, verify_password
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 

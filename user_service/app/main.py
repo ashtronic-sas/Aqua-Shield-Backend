@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
 from app.routes import user
-from app.utils.database import engine, Base
+from app.config.database import engine, Base
 from mangum import Mangum
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(root_path="/dev")
 
 # Configurar la información de la aplicación
-app.title = "AQUA SHIELD"
+app.title = "Aqua Shield User Service"
 app.version = "0.0.2"
 app.description = "API for Aqua Shield"
 app.docs_url = "/"
