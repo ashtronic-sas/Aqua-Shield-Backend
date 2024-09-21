@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(root_path="/dev")
 
 # Configurar la información de la aplicación
-app.title = "Aqua Shield User Service V2"
+app.title = "Aqua Shield User Service"
 app.version = "0.0.2"
 app.description = "API for Aqua Shield"
 app.docs_url = "/"
@@ -26,9 +26,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {"message": "Aquashield_backend_dev"}
+# @app.get("/")
+# async def root():
+#     return {"message": "Aquashield_backend_dev"}
 
 
 # Incluir los routers de las rutas
