@@ -51,25 +51,4 @@
             └── models.py
         └── lambda_function.py
         └── requirements.txt
-    └── 📁pedidos_service
-        └── 📁app
-            └── 📁auth
-                └── jwt_handler.py
-            └── 📁routes
-                └── __init__.py
-                └── order.py
-            └── 📁schemas
-                └── __init__.py
-                └── order.py
-            └── 📁services
-                └── __init__.py
-                └── order_service.py
-            └── 📁utils
-                └── __init__.py
-                └── database.py
-            └── __init__.py
-            └── main.py
-            └── models.py
-        └── lambda_function.py
-        └── requirements.txt
 ```
