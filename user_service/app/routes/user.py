@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate, UserOut, UserLogin , UserResponse
 from app.services.user_service import create_user, authenticate_user
-from app.utils.database import get_db
+from app.config.database import get_db
 from app.auth.jwt_handler import create_access_token, decode_access_token
 from fastapi.security import OAuth2PasswordBearer
 from typing import Dict
-from app.utils.models import User
+from user_service.app.models.models import User
 from typing import List
 
 router = APIRouter(prefix="/users", tags=["users"])
