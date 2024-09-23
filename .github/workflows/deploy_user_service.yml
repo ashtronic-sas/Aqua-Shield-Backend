@@ -9,6 +9,7 @@ jobs:
 
   CI:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       # Step-1: Checkout code
