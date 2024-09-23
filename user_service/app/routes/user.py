@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreate, UserOut, UserLogin , UserResponse
+from app.schemas.user import UserCreate, UserOut, UserLogin , UserResponse,UserUpdate
 from app.services.user_service import create_user, authenticate_user
 from app.config.database import get_db
 from app.auth.jwt_handler import create_access_token, decode_access_token
 from fastapi.security import OAuth2PasswordBearer
 from typing import Dict
-from user_service.app.models.models import User
+from app.models.models import User
 from typing import List
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -36,15 +36,13 @@ def register(user: UserCreate, token: str = Depends(oauth2_scheme), db: Session 
     Returns:
         UserResponse: Un objeto que contiene el token de acceso, el tipo de token, un mensaje de éxito y los datos del usuario creado.
     """
-    current_user = get_current_user(token)
     db_user = create_user(user, db)
-    access_token = create_access_token(data={"sub": db_user.username})
     user_data = {
         "id": str(db_user.id),
         "username": db_user.username,
         "email": db_user.email
     }
-    return UserResponse(access_token=access_token, token_type="bearer", message="User registered successfully", user=user_data)
+    return UserResponse(message="User registered successfully", user=user_data)
 
 @router.post("/login", response_model=Dict[str, str])
 def login(user: UserLogin, db: Session = Depends(get_db)):
@@ -83,14 +81,16 @@ def read_users(id: int, token: str = Depends(oauth2_scheme), db: Session = Depen
     Raises:
         HTTPException: Si el usuario no se encuentra, se lanza una excepción con código de estado 404 y un mensaje de "User not found".
     """
+    #User.username == current_user["sub"]
+
     current_user = get_current_user(token)
-    user = db.query(User).filter(User.id == id, User.username == current_user["sub"]).first()
+    user = db.query(User).filter(User.id == id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
 @router.put("/{id}", response_model=UserOut)
-def update_user(id: int, user: UserCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def update_user(id: int, user: UserUpdate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     Actualiza la información del usuario basado en su ID.
 
@@ -106,8 +106,8 @@ def update_user(id: int, user: UserCreate, token: str = Depends(oauth2_scheme), 
     Raises:
         HTTPException: Si el usuario no se encuentra en la base de datos, se lanza una excepción con código de estado 404.
     """
-    current_user = get_current_user(token)
-    db_user = db.query(User).filter(User.id == id, User.username == current_user["sub"]).first()
+    
+    db_user = db.query(User).filter(User.id == id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     db_user.username = user.username
@@ -132,15 +132,14 @@ def delete_user(id: int, token: str = Depends(oauth2_scheme), db: Session = Depe
     Returns:
         dict: Un diccionario que contiene un mensaje de éxito.
     """
-    current_user = get_current_user(token)
-    db_user = db.query(User).filter(User.id == id, User.username == current_user["sub"]).first()
+    db_user = db.query(User).filter(User.id == id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     db.delete(db_user)
     db.commit()
     return {"message": "User deleted successfully"}
 
-@router.get("/all", response_model=List[UserOut])
+@router.get("", response_model=List[UserOut])
 def read_users_all(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     """
     Lee todos los usuarios registrados en el sistema.
@@ -152,6 +151,6 @@ def read_users_all(token: str = Depends(oauth2_scheme), db: Session = Depends(ge
     Returns:
         List[UserOut]: La información de todos los usuarios registrados en el sistema.
     """
-    current_user = get_current_user(token)
     users = db.query(User).all()
+
     return users
