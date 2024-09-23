@@ -96,7 +96,7 @@ def update_user(id: int, user: UserUpdate, token: str = Depends(oauth2_scheme), 
 
     Args:
         id (int): El ID del usuario a actualizar.
-        user (UserCreate): Objeto que contiene la nueva información del usuario.
+        user (UserUpdate): Objeto que contiene la nueva información del usuario.
         token (str, opcional): Token de autenticación del usuario. Por defecto se obtiene mediante Depends(oauth2_scheme).
         db (Session, opcional): Sesión de la base de datos. Por defecto se obtiene mediante Depends(get_db).
 
@@ -110,8 +110,14 @@ def update_user(id: int, user: UserUpdate, token: str = Depends(oauth2_scheme), 
     db_user = db.query(User).filter(User.id == id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    db_user.username = user.username
-    db_user.email = user.email
+    
+    if user.username is not None:
+        db_user.username = user.username
+    if user.email is not None:
+        db_user.email = user.email
+    if user.password is not None:
+        db_user.password = user.password
+    
     db.commit()
     db.refresh(db_user)
     return db_user

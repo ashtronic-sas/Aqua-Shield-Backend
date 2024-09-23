@@ -7,9 +7,9 @@ from pydantic import validator, ValidationError
 
 class UserUpdate(BaseModel):
 
-    username: str
-    email: EmailStr
-    password: str
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
 
     class Config:
         json_schema_extra = {
