@@ -56,7 +56,7 @@ jobs:
           echo "SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }}" >> .env
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
-          
+          ls          
           cd $GITHUB_WORKSPACE/user_service
           zip -g $GITHUB_WORKSPACE/user_service.zip -r app
       # Step-7: Verify Zip Content
