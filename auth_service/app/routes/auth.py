@@ -4,11 +4,14 @@ from app.schemas.auth import UserCreate, UserLogin, Token
 from app.services.auth_service import create_user, authenticate_user
 from app.config.database import get_db
 from app.auth.jwt_handler import create_access_token
+from fastapi.security import OAuth2PasswordBearer
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 @router.post("/register")
-def register(user: UserCreate, db: Session = Depends(get_db)):
+def register(user: UserCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     return create_user(user, db)
 
 @router.post("/login", response_model=Token)

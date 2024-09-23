@@ -9,12 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev")
+#app = FastAPI(root_path="/dev")
+app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "Aquashield_backend User Service"
-app.version = "0.0.2"
-app.description = "api for aquashield user microservice"
+app.title = "Aquashield_backend auth service"
+app.version = "0.0.1"
+app.description = "api for aquashield auth microservice"
 app.docs_url = "/"
 
 # Configurar CORS
@@ -28,7 +29,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Aquashield_backend_dev_user_service"}
+    return {"message": "Aquashield_backend_dev_auth_service"}
 
 # Incluir los routers de las rutas
 app.include_router(auth.router)

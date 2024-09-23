@@ -1,4 +1,4 @@
-from app.models import User
+from app.models.models import User
 from app.schemas.auth import UserCreate, UserLogin
 from app.config.database import get_db
 from app.config.security import get_password_hash, verify_password
