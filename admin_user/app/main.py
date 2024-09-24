@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev")
+app = FastAPI(root_path="/dev", docs_url="/docs_auth_service", redoc_url=None)
 #app = FastAPI()
 
 # Configurar la información de la aplicación
