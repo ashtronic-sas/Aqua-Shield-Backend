@@ -27,7 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/dev")
+@app.get("/")
 async def root():
     return {"message": "Aquashield_backend_dev_user_service"}
 
