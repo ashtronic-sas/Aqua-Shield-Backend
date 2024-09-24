@@ -6,15 +6,13 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 def create_user(user: UserCreate, db: Session):
-    existing_user = db.query(User).filter((User.username == user.username) | (User.email == user.email)).first()
+    existing_user = db.query(User).filter((User.username == user.username)).first()
     if existing_user:
         if existing_user.username == user.username:
             raise HTTPException(status_code=400, detail="Username already exists")
-        if existing_user.email == user.email:
-            raise HTTPException(status_code=400, detail="Email already exists")
     
     hashed_password = get_password_hash(user.password)
-    new_user = User(username=user.username, email=user.email, hashed_password=hashed_password)
+    new_user = User(username=user.username, hashed_password=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

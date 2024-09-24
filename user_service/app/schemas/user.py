@@ -8,7 +8,6 @@ from pydantic import validator, ValidationError
 class UserUpdate(BaseModel):
 
     username: Optional[str] = None
-    email: Optional[EmailStr] = None
     password: Optional[str] = None
 
     class Config:
@@ -37,7 +36,6 @@ class UserUpdate(BaseModel):
 class UserCreate(BaseModel):
 
     username: str
-    email: str
     password: str
     created_at : Optional[datetime.datetime]  = None
     updated_at : Optional[datetime.datetime]  = None
@@ -67,7 +65,6 @@ class UserCreate(BaseModel):
 class UserOut(BaseModel):
     id: int
     username: str
-    email: str
     created_at : Optional[datetime.datetime]  = None
     updated_at : Optional[datetime.datetime]  = None
 

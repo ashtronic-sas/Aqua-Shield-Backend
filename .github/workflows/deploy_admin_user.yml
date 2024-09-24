@@ -1,7 +1,7 @@
-name: Deploy User Service to AWS Lambda
+name: Deploy Admin user to AWS Lambda
 
 on:
-  pull_request:
+  pull_request: 
     branches: 
       - dev 
 
@@ -36,7 +36,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          cd user_service
+          cd admin_user
           pip install -r requirements.txt
           
       # Step-5: Run Tests
@@ -50,25 +50,25 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/user_service.zip .
+          zip -r9 $GITHUB_WORKSPACE/admin_user.zip .
 
-          cd $GITHUB_WORKSPACE/user_service/app
+          cd $GITHUB_WORKSPACE/admin_user/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
           echo "SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }}" >> .env
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
-          cd $GITHUB_WORKSPACE/user_service
-          zip -g $GITHUB_WORKSPACE/user_service.zip -r app
+          cd $GITHUB_WORKSPACE/admin_user
+          zip -g $GITHUB_WORKSPACE/admin_user.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l user_service.zip
+        run: unzip -l admin_user.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: user_service.zip
+          path: admin_user.zip
 
           
   CD:
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda user_service.zip
+      - name: Download Lambda admin_user.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp user_service.zip s3://aquashieldbackenddev/user_service.zip
+        run: aws s3 cp admin_user.zip s3://aquashieldbackenddev/admin_user.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name user_service --s3-bucket aquashieldbackenddev --s3-key user_service.zip
+        run: aws lambda update-function-code --function-name admin_user --s3-bucket aquashieldbackenddev --s3-key admin_user.zip
