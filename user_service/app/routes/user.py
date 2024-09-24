@@ -113,8 +113,6 @@ def update_user(id: int, user: UserUpdate, token: str = Depends(oauth2_scheme), 
     
     if user.username is not None:
         db_user.username = user.username
-    if user.email is not None:
-        db_user.email = user.email
     if user.password is not None:
         db_user.password = user.password
     
