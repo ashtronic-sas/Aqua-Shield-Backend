@@ -63,7 +63,7 @@ def delete_admin_user(id: int, db: Session = Depends(get_db),token: str = Depend
     return delete_admin_user_db(id, db)
 
 @router.put("/{id}", response_model=AdminUserOut)
-def update_admin_user( id: int, admin_user: AdminUserUpdate, db: Session = Depends(get_db)):
+def update_admin_user( id: int, admin_user: AdminUserUpdate, db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     """
     Actualiza un usuario administrador en la base de datos.
 
