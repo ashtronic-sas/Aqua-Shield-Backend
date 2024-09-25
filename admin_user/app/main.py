@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
-from app.routes import admin_user
+from app.routers import admin_user
 from app.config.database import engine, Base
 from mangum import Mangum
 from fastapi.middleware.cors import CORSMiddleware
