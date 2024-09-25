@@ -83,7 +83,6 @@ def read_users(id: int, token: str = Depends(oauth2_scheme), db: Session = Depen
     """
     #User.username == current_user["sub"]
 
-    current_user = get_current_user(token)
     user = db.query(User).filter(User.id == id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

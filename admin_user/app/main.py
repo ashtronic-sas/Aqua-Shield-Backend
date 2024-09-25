@@ -9,11 +9,11 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev")
-#app = FastAPI()
+#app = FastAPI(root_path="/dev")
+app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "Aquashield_backend admin User Service"
+app.title = "admin User Service"
 app.version = "0.0.2"
 app.description = "api for aquashield admin user microservice"
 app.docs_url = "/"
