@@ -27,9 +27,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {"message": "Aquashield_backend_dev_user_service"}
+# @app.get("/")
+# async def root():
+#     return {"message": "Aquashield_backend_dev_user_service"}
 
 
 # Incluir los routers de las rutas
