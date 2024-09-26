@@ -29,7 +29,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Aquashield_backend_dev_admin_user_service"}
+    return {"message": "Aquashield backend employee service"}
 
 
 # Incluir los routers de las rutas
