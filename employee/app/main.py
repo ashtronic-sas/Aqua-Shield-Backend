@@ -13,9 +13,9 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "eemployee Service"
+app.title = "employee Service"
 app.version = "0.0.1"
-app.description = "api for aquashield eemployee service microservice"
+app.description = "api for aquashield employee service microservice"
 app.docs_url = "/"
 
 # Configurar CORS
