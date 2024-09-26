@@ -27,7 +27,7 @@ def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db),
     return create_employee(db, employee)
 
 # Obtener todos los empleados
-@router.get("/employee", response_model=list[EmployeeResponse])
+@router.get("/", response_model=list[EmployeeResponse])
 def get_all_employees(db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     return get_employees(db)
 
