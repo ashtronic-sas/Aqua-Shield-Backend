@@ -33,7 +33,7 @@ def get_all_employees(db: Session = Depends(get_db),current_user: dict = Depends
 
 # Obtener un empleado por ID
 @router.get("/employee/{id}", response_model=EmployeeResponse)
-def get_employee_by_id_endpoint(id: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
+def get_employee_by_id(id: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     employee = get_employee_by_id(db, id)
     if not employee:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found")
@@ -41,11 +41,11 @@ def get_employee_by_id_endpoint(id: int, db: Session = Depends(get_db),current_u
 
 # Actualizar un empleado existente
 @router.put("/employee/{id}", response_model=EmployeeResponse)
-def update_employee_endpoint(id: int, employee_update: EmployeeUpdate, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
+def update_employee_by_id(id: int, employee_update: EmployeeUpdate, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     return update_employee(db, id, employee_update)
 
 # Eliminar un empleado
 @router.delete("/employee/{id}")
-def delete_employee_endpoint(id: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
+def delete_employee_by_id(id: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     delete_employee(db, id)
     return {"message": "Employee deleted successfully"}
