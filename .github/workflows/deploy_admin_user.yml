@@ -3,7 +3,7 @@ name: Deploy Admin user to AWS Lambda
 on:
   push:  
     branches: 
-      - dev 
+      - admin_user 
 
 jobs:
 
@@ -76,7 +76,7 @@ jobs:
     needs: [CI]
     environment: production
 
-    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/admin_user' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
