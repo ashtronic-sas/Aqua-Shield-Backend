@@ -22,17 +22,17 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
     return payload
 
 # Crear un nuevo empleado
-@router.post("/employee", response_model=EmployeeResponse)
+@router.post("/", response_model=EmployeeResponse)
 def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     return create_employee(db, employee)
 
 # Obtener todos los empleados
-@router.get("/employee", response_model=list[EmployeeResponse])
+@router.get("/", response_model=list[EmployeeResponse])
 def get_all_employees(db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     return get_employees(db)
 
 # Obtener un empleado por ID
-@router.get("/employee/{id}", response_model=EmployeeResponse)
+@router.get("/{id}", response_model=EmployeeResponse)
 def get_employee_by_id(id: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     employee = get_employee_by_id(db, id)
     if not employee:
@@ -40,12 +40,12 @@ def get_employee_by_id(id: int, db: Session = Depends(get_db),current_user: dict
     return employee
 
 # Actualizar un empleado existente
-@router.put("/employee/{id}", response_model=EmployeeResponse)
+@router.put("/{id}", response_model=EmployeeResponse)
 def update_employee_by_id(id: int, employee_update: EmployeeUpdate, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     return update_employee(db, id, employee_update)
 
 # Eliminar un empleado
-@router.delete("/employee/{id}")
+@router.delete("/{id}")
 def delete_employee_by_id(id: int, db: Session = Depends(get_db),current_user: dict = Depends(get_current_user)):
     delete_employee(db, id)
     return {"message": "Employee deleted successfully"}
