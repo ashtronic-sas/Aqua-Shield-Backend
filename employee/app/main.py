@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(root_path="/dev",docs_url="/docsemployee",openapi_url="/docsemployee.json",redoc_url=None)
 #app = FastAPI()
 
-# Configurar la información de la aplicación
+# Configurar la información de la aplicación 
 app.title = "employee service"
 app.version = "0.0.1"
 app.description = "api for aquashield employee service microservice"
