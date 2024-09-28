@@ -19,17 +19,22 @@ app.description = "api for aquashield user microservice"
 app.docs_url = "/"
 
 # Configurar CORS
+origins = [
+    "http://localhost:5173",
+    "https://localhost:5173",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes especificar dominios específicos
+    allow_origins=origins,  # Puedes especificar dominios específicos
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# @app.get("/")
-# async def root():
-#     return {"message": "Aquashield_backend_dev_user_service"}
+@app.get("/")
+async def root():
+     return {"message": "Aquashield_backend_dev_user_service"}
 
 
 # Incluir los routers de las rutas
