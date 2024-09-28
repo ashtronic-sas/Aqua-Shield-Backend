@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, func, Float, ForeignKey,Text
 from sqlalchemy.orm import relationship
 from app.config.database import Base
 
@@ -6,11 +6,15 @@ class Employee(Base):
     __tablename__ = "employee"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
+    first_name = Column(String(255), nullable=False)
+    second_name = Column(String(255), nullable=True)
+    last_name = Column(String(255), nullable=False)
+    second_last_name = Column(String(255), nullable=True)
     document = Column(String(50), unique=True, nullable=False)
     phone = Column(String(20), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    photo = Column(Text, nullable=True)
 
     # Relación con EmployeeRegister
     employee_places = relationship("EmployeePlace", back_populates="employee")
