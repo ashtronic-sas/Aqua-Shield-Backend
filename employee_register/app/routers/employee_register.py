@@ -19,7 +19,7 @@ def update_employee(id: int, employee_register_update: EmployeeRegisterUpdate, d
     return update_employee_register(db, id, employee_register_update)
 
 # Obtener historial de asistencia de un empleado
-@router.get("/{employee_id}", response_model=list[EmployeeRegisterResponse],dependencies=[Depends(verify_token)])
+@router.get("/{id}", response_model=list[EmployeeRegisterResponse],dependencies=[Depends(verify_token)])
 def get_employee_registers(employee_id: int, db: Session = Depends(get_db)):
     return get_registers_by_employee(db, employee_id)
 
