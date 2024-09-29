@@ -19,6 +19,7 @@ app.description = "api for aquashield user microservice"
 app.docs_url = "/"
 
 # Configurar CORS
+
 origins = [
     "http://localhost:5173",
     "https://localhost:5173",
@@ -26,7 +27,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Puedes especificar dominios específicos
+    allow_origins=["*"],  # Puedes especificar dominios específicos
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
