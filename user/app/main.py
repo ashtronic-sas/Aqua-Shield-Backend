@@ -18,19 +18,20 @@ app.version = "0.0.2"
 app.description = "api for aquashield user microservice"
 app.docs_url = "/"
 
-# Configurar CORS
 
+# Definir orígenes permitidos
 origins = [
-    "http://localhost:5173",
-    "https://localhost:5173",
+    "http://127.0.0.1:5500",  # Tu frontend local
+    "http://localhost:5500"   # Opción adicional para localhost
 ]
 
+# Agregar middleware de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes especificar dominios específicos
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=origins,  # Permitir los orígenes definidos
+    allow_credentials=True,  # Permitir el uso de cookies o credenciales
+    allow_methods=["*"],     # Permitir todos los métodos (GET, POST, etc.)
+    allow_headers=["*"],     # Permitir todos los encabezados
 )
 
 @app.get("/")
