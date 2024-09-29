@@ -21,9 +21,8 @@ app.docs_url = "/"
 
 # Definir orígenes permitidos
 origins = [
-    "http://127.0.0.1:5500",  # Asegúrate de incluir este origen
-    "http://localhost:8000",
-    # Agrega otros dominios si es necesario
+    "http://127.0.0.1:5500",  # Tu frontend local
+    "http://localhost:5500"   # Opción adicional para localhost
 ]
 
 # Agregar middleware de CORS
