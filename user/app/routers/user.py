@@ -42,11 +42,7 @@ def register(user: UserCreate, token: str = Depends(oauth2_scheme), db: Session 
         "username": db_user.username,
         "email": db_user.email
     }
-    response = UserResponse(message="User registered successfully", user=user_data)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    return response
+    return UserResponse(message="User registered successfully", user=user_data)
 
 @router.post("/login", response_model=Dict[str, str])
 def login(user: UserLogin, db: Session = Depends(get_db)):
