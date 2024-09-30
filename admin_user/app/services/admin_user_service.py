@@ -68,7 +68,14 @@ def create_admin_user_new(admin_user: AdminUserCreate, db: Session):
 
         return new_admin_user
     except HTTPException as e:
-        return {"error": e.detail}
+        raise e
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred"
+        )
+    
 # Get all admin users
 def get_admin_user_all(db: Session):
     """
