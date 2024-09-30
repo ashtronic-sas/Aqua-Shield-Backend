@@ -37,8 +37,6 @@ class UserCreate(BaseModel):
 
     username: str
     password: str
-    created_at : Optional[datetime.datetime]  = None
-    updated_at : Optional[datetime.datetime]  = None
 
     class Config:
         json_schema_extra = {

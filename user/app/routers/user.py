@@ -1,30 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate, UserOut, UserLogin , UserResponse,UserUpdate
-from app.services.user_service import create_user, authenticate_user
+from app.services.user_service import create_user, authenticate_user,get_user_by_id,update_user_by_id,delete_user_by_id,get_all_users
 from app.config.database import get_db
-from app.auth.jwt_handler import create_access_token, decode_access_token
-from fastapi.security import OAuth2PasswordBearer
+from app.auth.jwt_handler import create_access_token
 from typing import Dict
 from app.models.models import User
 from typing import List
+from app.shared.utils import verify_token
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    payload = decode_access_token(token)
-    if not payload:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return payload
-
-@router.post("/register", response_model=UserResponse)
-def register(user: UserCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+@router.post("/register", response_model=UserResponse, dependencies=[Depends(verify_token)])
+def register(user: UserCreate, db: Session = Depends(get_db)):
     """
     Registra un nuevo usuario en el sistema.
 
@@ -37,6 +26,7 @@ def register(user: UserCreate, token: str = Depends(oauth2_scheme), db: Session 
         UserResponse: Un objeto que contiene el token de acceso, el tipo de token, un mensaje de éxito y los datos del usuario creado.
     """
     db_user = create_user(user, db)
+
     user_data = {
         "id": str(db_user.id),
         "username": db_user.username,
@@ -59,13 +49,14 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         HTTPException: Si las credenciales son inválidas, se lanza una excepción con el código de estado 401 y un mensaje de detalle.
     """
     db_user = authenticate_user(db, user.username, user.password)
+
     if not db_user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": db_user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/{id}", response_model=UserOut)
-def read_users(id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+@router.get("/{id}", response_model=UserOut, dependencies=[Depends(verify_token)])
+def read_users_by_id(id: int, db: Session = Depends(get_db)):
     """
     Lee la información del usuario actual basado en su ID y token de autenticación.
 
@@ -80,15 +71,10 @@ def read_users(id: int, token: str = Depends(oauth2_scheme), db: Session = Depen
     Raises:
         HTTPException: Si el usuario no se encuentra, se lanza una excepción con código de estado 404 y un mensaje de "User not found".
     """
-    #User.username == current_user["sub"]
+    return get_user_by_id(id, db)
 
-    user = db.query(User).filter(User.id == id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-@router.put("/{id}", response_model=UserOut)
-def update_user(id: int, user: UserUpdate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+@router.put("/{id}", response_model=UserOut, dependencies=[Depends(verify_token)])
+def update_user_by_id(id: int, user: UserUpdate, db: Session = Depends(get_db)):
     """
     Actualiza la información del usuario basado en su ID.
 
@@ -105,21 +91,10 @@ def update_user(id: int, user: UserUpdate, token: str = Depends(oauth2_scheme), 
         HTTPException: Si el usuario no se encuentra en la base de datos, se lanza una excepción con código de estado 404.
     """
     
-    db_user = db.query(User).filter(User.id == id).first()
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    if user.username is not None:
-        db_user.username = user.username
-    if user.password is not None:
-        db_user.password = user.password
-    
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    return update_user_by_id(id, user, db)
 
-@router.delete("/{id}", response_model=Dict[str, str])
-def delete_user(id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+@router.delete("/{id}", response_model=Dict[str, str], dependencies=[Depends(verify_token)])
+def delete_user_by_id(id: int, db: Session = Depends(get_db)):
     """
     Eliminar el usuario actual por ID.
 
@@ -134,15 +109,11 @@ def delete_user(id: int, token: str = Depends(oauth2_scheme), db: Session = Depe
     Returns:
         dict: Un diccionario que contiene un mensaje de éxito.
     """
-    db_user = db.query(User).filter(User.id == id).first()
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
-    db.delete(db_user)
-    db.commit()
-    return {"message": "User deleted successfully"}
 
-@router.get("", response_model=List[UserOut])
-def read_users_all(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    return delete_user_by_id(id, db)
+
+@router.get("", response_model=List[UserOut], dependencies=[Depends(verify_token)])
+def read_users_all(db: Session = Depends(get_db)):
     """
     Lee todos los usuarios registrados en el sistema.
 
@@ -153,6 +124,6 @@ def read_users_all(token: str = Depends(oauth2_scheme), db: Session = Depends(ge
     Returns:
         List[UserOut]: La información de todos los usuarios registrados en el sistema.
     """
-    users = db.query(User).all()
+    
 
-    return users
+    return get_all_users(db)
