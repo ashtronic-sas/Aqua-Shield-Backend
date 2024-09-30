@@ -56,7 +56,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/{id}", response_model=UserOut, dependencies=[Depends(verify_token)])
-def read_users_by_id(id: int, db: Session = Depends(get_db)):
+def read_users_id(id: int, db: Session = Depends(get_db)):
     """
     Lee la información del usuario actual basado en su ID y token de autenticación.
 
@@ -74,7 +74,7 @@ def read_users_by_id(id: int, db: Session = Depends(get_db)):
     return get_user_by_id(id, db)
 
 @router.put("/{id}", response_model=UserOut, dependencies=[Depends(verify_token)])
-def update_user_by_id(id: int, user: UserUpdate, db: Session = Depends(get_db)):
+def update_user_id(id: int, user: UserUpdate, db: Session = Depends(get_db)):
     """
     Actualiza la información del usuario basado en su ID.
 
@@ -94,7 +94,7 @@ def update_user_by_id(id: int, user: UserUpdate, db: Session = Depends(get_db)):
     return update_user_by_id(id, user, db)
 
 @router.delete("/{id}", response_model=Dict[str, str], dependencies=[Depends(verify_token)])
-def delete_user_by_id(id: int, db: Session = Depends(get_db)):
+def delete_user_id(id: int, db: Session = Depends(get_db)):
     """
     Eliminar el usuario actual por ID.
 
