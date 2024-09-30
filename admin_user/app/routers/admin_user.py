@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.schemas.admin_user import AdminUserOut, AdminUserCreate, AdminUserUpdate
-from app.services.admin_user_service import create_admin_user_new, get_admin_user_all, delete_admin_user_db, update_admin_user_db
+from app.services.admin_user_service import create_admin_user_new, get_admin_user_all, delete_admin_user_db, update_admin_user_db,get_admin_user_id
 from app.config.database import get_db
 from app.shared.utils import verify_token
 
@@ -23,7 +23,7 @@ def create_admin_user(admin_user: AdminUserCreate, db: Session = Depends(get_db)
     return create_admin_user_new(admin_user, db)
 
 @router.get("/", response_model=list[AdminUserOut],dependencies=[Depends(verify_token)])
-def read_admin_user(db: Session = Depends(get_db)):
+def read_admin_user_all(db: Session = Depends(get_db)):
     """
     Lee todos los usuarios administradores de la base de datos.
 
@@ -34,6 +34,20 @@ def read_admin_user(db: Session = Depends(get_db)):
         List[AdminUser]: Lista de todos los usuarios administradores.
     """
     return get_admin_user_all(db)
+
+@router.get("/{id}", response_model=AdminUserOut,dependencies=[Depends(verify_token)])
+def read_admin_user_by_id(id: int, db: Session = Depends(get_db)):
+    """
+    Lee un usuario administrador de la base de datos.
+
+    Args:
+        id (int): El ID del usuario administrador que se desea leer.
+        db (Session, opcional): Sesión de la base de datos proporcionada por la dependencia get_db.
+
+    Returns:
+        AdminUser: El usuario administrador con el ID especificado.
+    """
+    return get_admin_user_id(id,db)
 
 @router.delete("/{id}", response_model=AdminUserOut,dependencies=[Depends(verify_token)])
 def delete_admin_user(id: int, db: Session = Depends(get_db)):

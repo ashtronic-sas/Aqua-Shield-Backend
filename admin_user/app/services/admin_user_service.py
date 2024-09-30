@@ -20,52 +20,55 @@ def create_admin_user_new(admin_user: AdminUserCreate, db: Session):
     Returns:
         AdminUser: El nuevo usuario administrador creado.
     """
-    # Check if email already exists
-    if db.query(AdminUser).filter(AdminUser.email == admin_user.email).first():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+    try:
+        # Check if email already exists
+        if db.query(AdminUser).filter(AdminUser.email == admin_user.email).first():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+
+        # Check if username already exists
+        if db.query(User).filter(User.username == admin_user.username).first():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username already registered"
+            )
+
+        # Check if documento already exists
+        if db.query(AdminUser).filter(AdminUser.documento == admin_user.documento).first():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Documento already registered"
+            )
+
+        # Encrypt the password
+        hashed_password = pwd_context.hash(admin_user.password)
+
+        new_user = User(
+            username=admin_user.username,
+            hashed_password=hashed_password
         )
 
-    # Check if username already exists
-    if db.query(User).filter(User.username == admin_user.username).first():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already registered"
+        new_admin_user = AdminUser(
+            email=admin_user.email,
+            first_name=admin_user.first_name,
+            second_name=admin_user.second_name,
+            first_last_name=admin_user.first_last_name,
+            second_last_name=admin_user.second_last_name,
+            documento=admin_user.documento,
+            photo=admin_user.photo,
+            user=new_user
         )
 
-    # Check if documento already exists
-    if db.query(AdminUser).filter(AdminUser.documento == admin_user.documento).first():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Documento already registered"
-        )
+        db.add(new_user)
+        db.add(new_admin_user)
+        db.commit()
+        db.refresh(new_admin_user)
 
-    # Encrypt the password
-    hashed_password = pwd_context.hash(admin_user.password)
-
-    new_user = User(
-        username=admin_user.username,
-        hashed_password=hashed_password
-    )
-   
-    new_admin_user = AdminUser(
-        email=admin_user.email,
-        first_name=admin_user.first_name,
-        second_name=admin_user.second_name,
-        first_last_name=admin_user.first_last_name,
-        second_last_name=admin_user.second_last_name,
-        documento=admin_user.documento,
-        photo=admin_user.photo,
-        user=new_user
-    )
-   
-    db.add(new_user)
-    db.add(new_admin_user)
-    db.commit()
-    db.refresh(new_admin_user)
-
-    return new_admin_user
+        return new_admin_user
+    except HTTPException as e:
+        return {"error": e.detail}
 # Get all admin users
 def get_admin_user_all(db: Session):
     """
@@ -78,6 +81,26 @@ def get_admin_user_all(db: Session):
         List[AdminUser]: Lista de todos los usuarios administradores.
     """
     return db.query(AdminUser).all()
+
+def get_admin_user_id(id: int, db: Session):
+    """
+    Obtiene un usuario administrador de la base de datos.
+    Parámetros:
+    id (int): El ID del usuario administrador a obtener.
+    db (Session): La sesión de la base de datos.
+    Excepciones:
+    HTTPException: Si no se encuentra un usuario administrador con el ID proporcionado.
+    Retorna:
+    AdminUser: El usuario administrador con el ID especificado.
+    """
+    admin_user = db.query(AdminUser).filter(AdminUser.id == id).first()
+    if not admin_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Admin user with id {id} not found"
+        )
+    return admin_user
+
 # Delete an admin user
 def delete_admin_user_db(id: int, db: Session):
     """
