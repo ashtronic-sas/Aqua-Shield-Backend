@@ -24,7 +24,7 @@ class AdminUser(Base):
     first_last_name = Column(String(50))
     second_last_name = Column(String(50))
     documento = Column(String(50), unique=True)
-    phote =  Column(Text)
+    photo =  Column(Text)
     
     user = relationship("User", back_populates="admin_user")  
 

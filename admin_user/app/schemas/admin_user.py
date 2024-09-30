@@ -28,7 +28,7 @@ class AdminUserUpdate(BaseModel):
     first_last_name: Optional[str] = None
     second_last_name: Optional[str] = None
     documento: Optional[str] = None
-    phote: Optional[str] = None
+    photo: Optional[str] = None
     
 
 class AdminUserCreate(BaseModel):
@@ -41,7 +41,7 @@ class AdminUserCreate(BaseModel):
     first_last_name: str
     second_last_name: str
     documento: str
-    phote: Optional[str]| None
+    photo: Optional[str]| None
 
 class AdminUserOut(BaseModel):
     id: int
@@ -51,7 +51,7 @@ class AdminUserOut(BaseModel):
     first_last_name: str
     second_last_name: str
     documento: str
-    phote: str
+    photo: str
 
     class Config:
         orm_mode = True

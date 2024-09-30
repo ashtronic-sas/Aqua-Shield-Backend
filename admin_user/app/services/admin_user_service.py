@@ -56,7 +56,7 @@ def create_admin_user_new(admin_user: AdminUserCreate, db: Session):
         first_last_name=admin_user.first_last_name,
         second_last_name=admin_user.second_last_name,
         documento=admin_user.documento,
-        phote=admin_user.phote,
+        photo=admin_user.photo,
         user=new_user
     )
    
@@ -162,8 +162,8 @@ def update_admin_user_db(id: int, admin_user: AdminUserCreate, db: Session):
         admin_user_db.second_last_name = admin_user.second_last_name
     if admin_user.documento:
         admin_user_db.documento = admin_user.documento
-    if admin_user.phote:
-        admin_user_db.phote = admin_user.phote
+    if admin_user.photo:
+        admin_user_db.photo = admin_user.photo
 
     db.commit()
     db.refresh(admin_user_db)
