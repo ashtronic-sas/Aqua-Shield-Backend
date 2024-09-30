@@ -9,8 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev",docs_url="/docsuser",openapi_url="/docsuser.json",redoc_url=None)
-#app = FastAPI()
+#app = FastAPI(root_path="/dev",docs_url="/docsuser",openapi_url="/docsuser.json",redoc_url=None)
+app = FastAPI()
 
 # Configurar la información de la aplicación
 app.title = "User Service"
@@ -22,7 +22,8 @@ app.docs_url = "/"
 # Definir orígenes permitidos
 origins = [
     "http://127.0.0.1:5500",  # Tu frontend local
-    "http://localhost:5500"   # Opción adicional para localhost
+    "http://localhost:5500",  # Opción adicional para localhost
+    "*"
 ]
 
 # Agregar middleware de CORS
