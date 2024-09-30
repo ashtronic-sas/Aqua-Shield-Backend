@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
-from app.routers import user
+from app.routers import owner
 from app.config.database import engine, Base
 from mangum import Mangum
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,13 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev",docs_url="/docsuser",openapi_url="/docsuser.json",redoc_url=None)
-#app = FastAPI()
+#app = FastAPI(root_path="/dev",docs_url="/docsowner",openapi_url="/docsowner.json",redoc_url=None)
+app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "User Service"
+app.title = "owner Service"
 app.version = "0.0.1"
-app.description = "api for aquashield user microservice"
+app.description = "api for aquashield owner"
 app.docs_url = "/"
 
 
@@ -35,13 +35,13 @@ app.add_middleware(
     allow_headers=["*", "access-control-allow-methods", "access-control-allow-origin", "authorization", "content-type"],
 )
 
-@app.get("/")
+""" @app.get("/")
 async def root():
-     return {"message": "Aquashield_backend_dev_user_service"}
+     return {"message": "Aquashield_backend_dev_owner_service"} """
 
 
 # Incluir los routers de las rutas
-app.include_router(user.router)
+app.include_router(owner.router)
 
 handler = Mangum(app)
 

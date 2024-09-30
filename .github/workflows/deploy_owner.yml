@@ -1,9 +1,9 @@
-name: Deploy User Service to AWS Lambda
+name: Deploy owner Service to AWS Lambda
 
 on:
   push:
     branches: 
-      - user 
+      - owner 
 
 jobs:
 
@@ -36,7 +36,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          cd user
+          cd owner
           pip install -r requirements.txt
           
       # Step-5: Run Tests
@@ -50,25 +50,25 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/user.zip .
+          zip -r9 $GITHUB_WORKSPACE/owner.zip .
 
-          cd $GITHUB_WORKSPACE/user/app
+          cd $GITHUB_WORKSPACE/owner/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
           echo "SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }}" >> .env
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
-          cd $GITHUB_WORKSPACE/user
-          zip -g $GITHUB_WORKSPACE/user.zip -r app
+          cd $GITHUB_WORKSPACE/owner
+          zip -g $GITHUB_WORKSPACE/owner.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l user.zip
+        run: unzip -l owner.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: user.zip
+          path: owner.zip
 
           
   CD:
@@ -76,7 +76,7 @@ jobs:
     needs: [CI]
     environment: production
 
-    if: github.ref == 'refs/heads/user' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/owner' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda user.zip
+      - name: Download Lambda owner.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp user.zip s3://aquashieldbackenddev/user.zip
+        run: aws s3 cp owner.zip s3://aquashieldbackenddev/owner.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name user_service --s3-bucket aquashieldbackenddev --s3-key user.zip
+        run: aws lambda update-function-code --function-name owner --s3-bucket aquashieldbackenddev --s3-key owner.zip
