@@ -20,6 +20,7 @@ class UserCreate(BaseModel):
     }
 
 class AdminUserUpdate(BaseModel):
+
     username: Optional[str] = None
     password: Optional[str] = None
     email: Optional[EmailStr] = None
@@ -39,12 +40,13 @@ class AdminUserCreate(BaseModel):
     first_name: str
     second_name: Optional[str]| None
     first_last_name: str
-    second_last_name: str
+    second_last_name: Optional[str]| None
     documento: str
     photo: Optional[str]| None
 
 class AdminUserOut(BaseModel):
     id: int
+    user_id: int
     email: str
     first_name: str
     second_name: str
