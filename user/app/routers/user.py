@@ -40,7 +40,6 @@ def register(user: UserCreate, token: str = Depends(oauth2_scheme), db: Session 
     user_data = {
         "id": str(db_user.id),
         "username": db_user.username,
-        "email": db_user.email
     }
     return UserResponse(message="User registered successfully", user=user_data)
 
