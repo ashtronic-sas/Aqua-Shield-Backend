@@ -17,7 +17,6 @@ class Employee(Base):
     photo = Column(Text, nullable=True)
 
     # Relación con EmployeeRegister
-    employee_places = relationship("EmployeePlace", back_populates="employee")
     employee_registers = relationship("EmployeeRegister", back_populates="employee")
 
 class EmployeeRegister(Base):
@@ -50,16 +49,3 @@ class Place(Base):
 
     # Relación con EmployeeRegister
     employee_registers = relationship("EmployeeRegister", back_populates="place")
-
-class EmployeePlace(Base):
-    __tablename__ = "|employee_places"
-
-    id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
-    place_id = Column(Integer, ForeignKey("places.id"), nullable=False)
-    assigned_at = Column(DateTime(timezone=True), server_default=func.now())
-
-    # Relaciones
-    employee = relationship("Employee", back_populates="employee_places")
-    place = relationship("Place", back_populates="employee_places")
-
