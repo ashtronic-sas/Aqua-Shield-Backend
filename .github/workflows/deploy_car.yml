@@ -1,9 +1,9 @@
-name: Deploy user_place Service to AWS Lambda
+name: Deploy car Service to AWS Lambda
 
 on:
   push:
     branches: 
-      - user_place 
+      - car 
 
 jobs:
 
@@ -36,7 +36,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          cd user_place
+          cd car
           pip install -r requirements.txt
           
       # Step-5: Run Tests
@@ -50,25 +50,25 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/user_place.zip .
+          zip -r9 $GITHUB_WORKSPACE/car.zip .
 
-          cd $GITHUB_WORKSPACE/user_place/app
+          cd $GITHUB_WORKSPACE/car/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
           echo "SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }}" >> .env
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
-          cd $GITHUB_WORKSPACE/user_place
-          zip -g $GITHUB_WORKSPACE/user_place.zip -r app
+          cd $GITHUB_WORKSPACE/car
+          zip -g $GITHUB_WORKSPACE/car.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l user_place.zip
+        run: unzip -l car.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: user_place.zip
+          path: car.zip
 
           
   CD:
@@ -76,7 +76,7 @@ jobs:
     needs: [CI]
     environment: production
 
-    if: github.ref == 'refs/heads/user_place' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/car' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda user_place.zip
+      - name: Download Lambda car.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp user_place.zip s3://aquashieldbackenddev/user_place.zip
+        run: aws s3 cp car.zip s3://aquashieldbackenddev/car.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name user_place --s3-bucket aquashieldbackenddev --s3-key user_place.zip
+        run: aws lambda update-function-code --function-name car --s3-bucket aquashieldbackenddev --s3-key car.zip
