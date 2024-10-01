@@ -3,22 +3,43 @@ from typing import Optional
 from datetime import datetime
 
 class EmployeeCreate(BaseModel):
-    name: str
+
+    first_name: str
+    second_name: Optional[str]
+    last_name: str
+    second_last_name: Optional[str]
+    document: str
+    photo   : Optional[str]
     document: str
     phone: str
 
+
 class EmployeeUpdate(BaseModel):
-    name: Optional[str]
+
+    first_name: str
+    second_name: Optional[str]
+    last_name: str
+    second_last_name: Optional[str]
+    document: str
+    photo   : Optional[str]
+    document: str
+    phone: str
     document: Optional[str]
     phone: Optional[str]
 
 class EmployeeResponse(BaseModel):
+
     id: int
-    name: str
+    first_name: str
+    second_name: Optional[str]
+    last_name: str
+    second_last_name: Optional[str]
+    document: str
+    photo   : Optional[str]
     document: str
     phone: str
-    created_at: datetime
-    updated_at: datetime
+    document: Optional[str]
+    phone: Optional[str]
 
     class Config:
         orm_mode = True
