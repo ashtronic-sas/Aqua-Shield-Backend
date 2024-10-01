@@ -44,8 +44,6 @@ class Place(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relación con UserPlace
-    user_places = relationship("UserPlace", back_populates="place")
-    employee_places = relationship("EmployeePlace", back_populates="place")
 
     # Relación con EmployeeRegister
     employee_registers = relationship("EmployeeRegister", back_populates="place")
