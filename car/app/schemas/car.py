@@ -3,7 +3,6 @@ from typing import Optional
 from datetime import datetime
 
 class CarCreate(BaseModel):
-    id: int
     license_plate: str
     brand: str
     model: str
