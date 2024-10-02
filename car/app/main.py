@@ -13,7 +13,7 @@ app = FastAPI(root_path="/dev",docs_url="/docscar",openapi_url="/docscar.json",r
 #app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "Car test Service"
+app.title = "Car Service"
 app.version = "0.0.1"
 app.description = "api for aquashield Car service"
 app.docs_url = "/"
