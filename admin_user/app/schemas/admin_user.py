@@ -7,8 +7,6 @@ class UserCreate(BaseModel):
 
     username: str
     password: str
-    created_at : Optional[datetime.datetime]  = None
-    updated_at : Optional[datetime.datetime]  = None
 
     class Config:
         json_schema_extra = {
@@ -30,8 +28,7 @@ class AdminUserUpdate(BaseModel):
     second_last_name: Optional[str] = None
     documento: Optional[str] = None
     photo: Optional[str] = None
-    created_at: Optional[datetime.datetime] = None
-    updated_at: Optional[datetime.datetime] = None  
+
     
 
 class AdminUserCreate(BaseModel):
@@ -45,8 +42,7 @@ class AdminUserCreate(BaseModel):
     second_last_name: Optional[str]| None
     documento: str
     photo: Optional[str]| None
-    created_at: Optional[datetime.datetime] = None
-    updated_at: Optional[datetime.datetime] = None  
+
 
 class AdminUserOut(BaseModel):
     id: Optional[int] = None
