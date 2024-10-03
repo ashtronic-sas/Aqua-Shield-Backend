@@ -16,7 +16,7 @@ def get_employees(db: Session):
     return db.query(Employee).all()
 
 # Obtener empleado por ID
-def get_employee_by_id(db: Session, employee_id: int):
+def get_employee_id(db: Session, employee_id: int):
     return db.query(Employee).filter(Employee.id == employee_id).first()
 
 # Actualizar un empleado existente
