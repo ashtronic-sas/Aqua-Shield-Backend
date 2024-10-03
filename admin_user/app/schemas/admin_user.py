@@ -45,15 +45,17 @@ class AdminUserCreate(BaseModel):
     photo: Optional[str]| None
 
 class AdminUserOut(BaseModel):
-    id: int
-    user_id: int
-    email: str
-    first_name: str
-    second_name: str
-    first_last_name: str
-    second_last_name: str
-    documento: str
-    photo: str
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    email: Optional[str] = None
+    first_name: Optional[str] = None
+    second_name: Optional[str] = None
+    first_last_name: Optional[str] = None
+    second_last_name: Optional[str] = None
+    documento: Optional[str] = None
+    photo: Optional[str] = None
+    created_at: Optional[datetime.datetime] = None
+    updated_at: Optional[datetime.datetime] = None  
 
     class Config:
         orm_mode = True
