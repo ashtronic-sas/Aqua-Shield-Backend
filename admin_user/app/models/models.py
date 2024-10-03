@@ -25,6 +25,8 @@ class AdminUser(Base):
     second_last_name = Column(String(50))
     documento = Column(String(50), unique=True)
     photo =  Column(Text)
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     
     user = relationship("User", back_populates="admin_user")  
 
