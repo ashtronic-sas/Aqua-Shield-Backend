@@ -40,6 +40,8 @@ class EmployeeResponse(BaseModel):
     phone: str
     document: Optional[str]
     phone: Optional[str]
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         orm_mode = True
