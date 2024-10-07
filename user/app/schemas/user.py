@@ -14,7 +14,6 @@ class UserUpdate(BaseModel):
         json_schema_extra = {
             "example": {
                 "username": "string",
-                "email": "string",
                 "password": "string",
             }
         }
