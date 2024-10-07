@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
-from app.routers import user_place
+from app.routers import employee_place
 from app.config.database import engine, Base
 from mangum import Mangum
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,13 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev",docs_url="/docsuser_place",openapi_url="/docsuser_place.json",redoc_url=None)
-#app = FastAPI()
+#app = FastAPI(root_path="/dev",docs_url="/docemployee_place",openapi_url="/docsemployee_place.json",redoc_url=None)
+app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "User_Place Service"
+app.title = "Employee_Place Service"
 app.version = "0.0.1"
-app.description = "api for aquashielduser_place service"
+app.description = "api for aquashield employee_place service"
 app.docs_url = "/"
 
 
@@ -37,11 +37,11 @@ app.add_middleware(
 
 """ @app.get("/")
 async def root():
-     return {"message": "Aquashield_backend_dev_owner_service"} """
+     return {"message": "Aquashield_backend_dev_employee_place"} """
 
 
 # Incluir los routers de las rutas
-app.include_router(user_place.router)
+app.include_router(employee_place.router)
 
 handler = Mangum(app)
 
