@@ -9,8 +9,8 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-#app = FastAPI(root_path="/dev",docs_url="/docscar_registry",openapi_url="/docscar_registry.json",redoc_url=None)
-app = FastAPI()
+app = FastAPI(root_path="/dev",docs_url="/docscar_registry",openapi_url="/docscar_registry.json",redoc_url=None)
+#app = FastAPI()
 
 # Configurar la información de la aplicación
 app.title = "Car Registry Service"
