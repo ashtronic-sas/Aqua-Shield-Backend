@@ -44,8 +44,8 @@ def get_employee_place_all(db: Session) :
     return db_employee_place
 
 
-def get_employee_place_by_id_db(db: Session, id: int):
-    db_employee_place = db.query(EmployeePlace).filter(Employee.id == id).first()
+def get_employee_place_all_by_id_db(db: Session, employee_id: int):
+    db_employee_place = db.query(EmployeePlace).filter(EmployeePlace.employee_id == employee_id).all()
     if db_employee_place is None:
         raise HTTPException(status_code=404, detail="EmployeePlace not found")
     return db_employee_place
