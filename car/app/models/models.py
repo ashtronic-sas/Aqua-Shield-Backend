@@ -27,6 +27,8 @@ class Owner(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+    car = relationship("Owner", back_populates="car")
+
 class Car_Register(Base):
     __tablename__ = "car_register"
 
