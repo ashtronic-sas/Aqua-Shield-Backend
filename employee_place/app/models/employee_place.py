@@ -3,15 +3,18 @@ from sqlalchemy.orm import relationship
 from app.config.database import Base
 
 class Employee(Base):
-    __tablename__ = "employees"
+    __tablename__ = "employee"
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
+    document = Column(String(50), unique=True, nullable=False)
+    phone = Column(String(20), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    # Relación inversa
+    # Relación con EmployeeRegister
     employee_places = relationship("EmployeePlace", back_populates="employee")
+    employee_registers = relationship("EmployeeRegister", back_populates="employee")
 
 class EmployeePlace(Base):
     __tablename__ = "employee_places"
