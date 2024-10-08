@@ -7,24 +7,24 @@ from app.shared.utils import verify_token
 
 router = APIRouter( prefix="/car", tags=["car"] )
 
-# Rutas de la entidad Car
-@router.post("/", response_model=CarCreate, dependencies=[Depends(verify_token)])
+
+@router.post("/", response_model=CarResponse, dependencies=[Depends(verify_token)])
 def create_car(car: CarCreate, db: Session = Depends(get_db)):
     return create_car_db(db, car)
 
-# Rutas de la entidad Car
-@router.get("/", response_model=CarResponse, dependencies=[Depends(verify_token)])
+
+@router.get("/", response_model=list[CarResponse] , dependencies=[Depends(verify_token)])
 def get_all_car(db: Session = Depends(get_db)):
     return get_all_car_db(db)
 
 @router.get("/{id}", response_model=CarResponse, dependencies=[Depends(verify_token)])
 def get_car_by_id(id: int, db: Session = Depends(get_db)):
 
-    return get__car_by_id_db(db)
+    return get__car_by_id_db(db, id)
 
 @router.put("/{id}", response_model=CarResponse, dependencies=[Depends(verify_token)])
 def update_car_by_id(id: int, car: CarUpdate, db: Session = Depends(get_db)):
-    return update_car_by_id_db(db,car)
+    return update_car_by_id_db(db, id, car)
 
 @router.delete("/{id}", dependencies=[Depends(verify_token)])
 def delete_car_by_id(id: int, db: Session = Depends(get_db)):

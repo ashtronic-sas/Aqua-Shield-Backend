@@ -14,8 +14,11 @@ class CarResponse(BaseModel):
     brand: str
     model: str
     owner_id: int
-    create_at: datetime
-    update_at: datetime
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True
 
 class CarUpdate(BaseModel):
     license_plate: Optional[str]
