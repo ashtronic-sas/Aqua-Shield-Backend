@@ -15,7 +15,7 @@ app = FastAPI()
 # Configurar la información de la aplicación
 app.title = "Car Registry Service"
 app.version = "0.0.1"
-app.description = "api for aquashield Car Registry service "
+app.description = "api for aquashield Car Registry service"
 app.docs_url = "/"
 
 
