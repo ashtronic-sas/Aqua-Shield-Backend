@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
-from app.routers import car
+from app.routers import car_registry
 from app.config.database import engine, Base
 from mangum import Mangum
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,13 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev",docs_url="/docscar",openapi_url="/docscar.json",redoc_url=None)
-#app = FastAPI()
+#app = FastAPI(root_path="/dev",docs_url="/docscar_registry",openapi_url="/docscar_registry.json",redoc_url=None)
+app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "Car Service"
+app.title = "Car Registry Service"
 app.version = "0.0.1"
-app.description = "api for aquashield Car service"
+app.description = "api for aquashield Car Registry service"
 app.docs_url = "/"
 
 
@@ -37,11 +37,11 @@ app.add_middleware(
 
 """ @app.get("/")
 async def root():
-     return {"message": "Aquashield_backend_dev_car_service"} """
+     return {"message": "Aquashield_backend_dev_car_registry_service"} """
 
 
 # Incluir los routers de las rutas
-app.include_router(car.router)
+app.include_router(car_registry.router)
 
 handler = Mangum(app)
 

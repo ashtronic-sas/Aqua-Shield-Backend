@@ -1,4 +1,4 @@
-name: Deploy car Service to AWS Lambda
+name: Deploy car registry Service to AWS Lambda
 
 on:
   push:
