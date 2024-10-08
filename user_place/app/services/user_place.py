@@ -29,7 +29,10 @@ def get_all_user_places(db: Session):
 
 # Obtener las sedes asignadas a un usuario
 def get_places_by_user(db: Session, user_id: int):
-    return db.query(UserPlace).filter(UserPlace.user_id == user_id).all()
+    user_places = db.query(UserPlace).filter(UserPlace.user_id == user_id).all()
+    if not user_places:
+        raise HTTPException(status_code=404, detail="No places found for the given user")
+    return user_places
 
 # Obtener los usuarios asignados a una sede
 def get_users_by_place(db: Session, place_id: int):
