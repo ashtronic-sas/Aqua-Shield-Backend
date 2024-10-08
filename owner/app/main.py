@@ -15,7 +15,7 @@ app = FastAPI(root_path="/dev",docs_url="/docsowner",openapi_url="/docsowner.jso
 # Configurar la información de la aplicación
 app.title = "owner Service"
 app.version = "0.0.1"
-app.description = "api for aquashield owner"
+app.description = "api for aquashield owner "
 app.docs_url = "/"
 
 
