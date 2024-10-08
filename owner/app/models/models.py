@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, func,relationship
+from sqlalchemy import Column, Integer, String, DateTime, func,ForeignKey
+from sqlalchemy.orm import relationship
 from app.config.database import Base
 
 class Owner(Base):
@@ -13,4 +14,17 @@ class Owner(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    car = relationship("Owner", back_populates="car")
+    cars = relationship('Car', back_populates='owner')
+
+class Car(Base):
+    __tablename__ = "car"
+
+    id = Column(Integer, primary_key=True, index=True)
+    license_plate = Column(String(50), nullable=False)
+    brand = Column(String(50), nullable=False)
+    model = Column(String(50), nullable=False)
+    owner_id = Column(Integer, ForeignKey("owners.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    owner = relationship('Owner', back_populates='cars')
