@@ -5,7 +5,19 @@ from app.schemas.user_place import UserPlaceCreate
 
 # Crear una nueva relación usuario-sede
 def create_user_place(db: Session, user_place: UserPlaceCreate):
-    db_user_place = UserPlace(**user_place.dict())
+    # Verificar si la relación usuario-sede ya existe
+    existing_user_place = db.query(UserPlace).filter(
+        UserPlace.user_id == user_place.user_id,
+        UserPlace.place_id == user_place.place_id
+    ).first()
+    
+    if existing_user_place:
+        raise HTTPException(status_code=400, detail="UserPlace already exists")
+    
+    db_user_place = UserPlace(
+        user_id=user_place.user_id,
+        place_id=user_place.place_id
+    )
     db.add(db_user_place)
     db.commit()
     db.refresh(db_user_place)
