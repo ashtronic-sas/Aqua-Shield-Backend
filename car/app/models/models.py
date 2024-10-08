@@ -9,7 +9,7 @@ class Car(Base):
     license_plate = Column(String(50), unique=True, nullable=False)
     brand = Column(String(50), nullable=False)
     model = Column(String(50), nullable=False)
-    owner_id = Column(Integer, ForeignKey("owners.id"), nullable=False)
+    owner_id = Column(Integer, ForeignKey("owner.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -18,7 +18,7 @@ class Car(Base):
 
 
 class Owner(Base):
-    __tablename__ = "owners"
+    __tablename__ = "owner"
 
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String(100), nullable=False)
