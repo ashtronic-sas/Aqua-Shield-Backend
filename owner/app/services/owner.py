@@ -5,6 +5,11 @@ from app.schemas.owner import OwnerCreate, OwnerUpdate
 
 # Crear un nuevo propietario
 def create_owner(db: Session, owner: OwnerCreate):
+    # Verificar que la cédula sea única
+    existing_owner = db.query(Owner).filter(Owner.cedula == owner.cedula).first()
+    if existing_owner:
+        raise HTTPException(status_code=400, detail="Owner with this cedula already exists")
+    
     db_owner = Owner(**owner.dict())
     db.add(db_owner)
     db.commit()
