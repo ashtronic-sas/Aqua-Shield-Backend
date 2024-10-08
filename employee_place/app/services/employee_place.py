@@ -5,7 +5,7 @@ from app.models.employee_place import EmployeePlace, Employee, Place
 from app.schemas.employee_place import EmployeePlaceCreate,EmployeePlaceResponse
 from typing import List
 
-# Crear una nueva relación usuario-sede
+
 def create_employee_place(db: Session, employee_place: EmployeePlaceCreate):
     # Verificar si el employee_id existe en la tabla employee
     employee = db.query(Employee).filter(Employee.id == employee_place.employee_id).first()
@@ -14,6 +14,14 @@ def create_employee_place(db: Session, employee_place: EmployeePlaceCreate):
 
     # Verificar si el place_id existe en la tabla place
     place = db.query(Place).filter(Place.id == employee_place.place_id).first()
+
+    # Verificar si la combinación de employee_id y place_id ya existe en la tabla employee_place
+    existing_employee_place = db.query(EmployeePlace).filter(
+        EmployeePlace.employee_id == employee_place.employee_id,
+        EmployeePlace.place_id == employee_place.place_id
+    ).first()
+    if existing_employee_place:
+        raise HTTPException(status_code=400, detail="The combination of Employee ID and Place ID already exists")
     if place is None:
         raise HTTPException(status_code=400, detail="Place ID does not exist")
 
@@ -37,7 +45,7 @@ def get_employee_place_all(db: Session) :
 
 
 def get_employee_place_by_id_db(db: Session, id: int):
-    db_employee_place = db.query(EmployeePlace).filter(EmployeePlace.id == id).first()
+    db_employee_place = db.query(EmployeePlace).filter(Employee.id == id).first()
     if db_employee_place is None:
         raise HTTPException(status_code=404, detail="EmployeePlace not found")
     return db_employee_place

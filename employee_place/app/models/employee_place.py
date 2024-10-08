@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, UniqueConstraint,ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, func, UniqueConstraint,ForeignKey,Float,Text
 from sqlalchemy.orm import relationship
 from app.config.database import Base
 
@@ -6,11 +6,15 @@ class Employee(Base):
     __tablename__ = "employee"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
+    first_name = Column(String(255), nullable=False)
+    second_name = Column(String(255), nullable=True)
+    last_name = Column(String(255), nullable=False)
+    second_last_name = Column(String(255), nullable=True)
     document = Column(String(50), unique=True, nullable=False)
     phone = Column(String(20), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    photo = Column(Text, nullable=True)
 
     # Relación con EmployeeRegister
     employee_places = relationship("EmployeePlace", back_populates="employee")
@@ -20,7 +24,7 @@ class EmployeePlace(Base):
     __tablename__ = "employee_places"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
     place_id = Column(Integer, ForeignKey("places.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -45,3 +49,17 @@ class Place(Base):
 
     # Relación inversa
     employee_places = relationship("EmployeePlace", back_populates="place")
+
+class EmployeeRegister(Base):
+    __tablename__ = "employee_registers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)  # Relación con Employee
+    cedula_employee = Column(String(50), nullable=False)
+    photo_employee = Column(Text, nullable=False)
+    entry_time = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    exit_time = Column(DateTime(timezone=True), nullable=True)
+    hours_worked = Column(Float, nullable=True)
+
+    # Relaciones
+    employee = relationship("Employee", back_populates="employee_registers")
