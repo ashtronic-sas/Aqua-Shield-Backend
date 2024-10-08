@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func
+from sqlalchemy import Column, Integer, String, DateTime, func,relationship
 from app.config.database import Base
 
 class Owner(Base):
@@ -12,3 +12,5 @@ class Owner(Base):
     cedula = Column(String(50), unique=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    car = relationship("Owner", back_populates="car")
