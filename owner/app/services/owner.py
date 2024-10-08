@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from owner.app.models.owner import Owner
+from app.models.owner import Owner
 from app.schemas.owner import OwnerCreate, OwnerUpdate
 
 # Crear un nuevo propietario
