@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 Base.metadata.create_all(bind=engine)
 
 # Instanciar la aplicación de FastAPI
-app = FastAPI(root_path="/dev",docs_url="/docsadmin_user",openapi_url="/docsadmin_user.json",redoc_url=None)
+app = FastAPI(docs_url="/docsadmin_user",openapi_url="/docsadmin_user.json",redoc_url=None)
 #app = FastAPI()
 
 # Configurar la información de la aplicación
@@ -27,9 +27,9 @@ app.add_middleware(
     allow_headers=["*", "access-control-allow-methods", "access-control-allow-origin", "authorization", "content-type"],
 )
 
-@app.get("/")
-async def root():
-    return {"message": "Aquashield_backend_dev_admin_user_service"}
+# @app.get("/")
+# async def root():
+#     return {"message": "Aquashield_backend_dev_admin_user_service"}
 
 
 # Incluir los routers de las rutas
