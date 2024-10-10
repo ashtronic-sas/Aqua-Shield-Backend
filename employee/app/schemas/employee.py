@@ -16,14 +16,14 @@ class EmployeeCreate(BaseModel):
 
 class EmployeeUpdate(BaseModel):
 
-    first_name: str
+    first_name:  Optional[str]
     second_name: Optional[str]
-    last_name: str
+    last_name: Optional[str]
     second_last_name: Optional[str]
-    document: str
+    document:  Optional[str]
     photo   : Optional[str]
-    document: str
-    phone: str
+    document:  Optional[str]
+    phone:  Optional[str]
     document: Optional[str]
     phone: Optional[str]
 
