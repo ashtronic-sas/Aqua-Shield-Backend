@@ -27,9 +27,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+""" @app.get("/")
 async def root():
-    return {"message": "Aquashield backend employee register service"}
+    return {"message": "Aquashield backend employee register service"} """
 
 
 # Incluir los routers de las rutas
