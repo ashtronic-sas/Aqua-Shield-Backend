@@ -1,7 +1,7 @@
 name: Deploy employee Service to AWS Lambda
 
 on:
-  push:
+  pull_request:
     branches: 
       - employee_dev 
 
@@ -76,8 +76,6 @@ jobs:
     needs: [CI]
     environment: depelopment
 
-    if: github.ref == 'refs/heads/employee_dev' && github.event_name == 'push'
-    
     steps:
       # Step-1: Checkout code
       - name: Checkout Code
