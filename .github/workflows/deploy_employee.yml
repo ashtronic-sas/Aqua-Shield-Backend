@@ -3,7 +3,7 @@ name: Deploy employee Service to AWS Lambda
 on:
   push:
     branches: 
-      - employee 
+      - employee_dev 
 
 jobs:
 
