@@ -1,4 +1,4 @@
-name: Deploy Employee Register to AWS Lambda
+name: Deploy Employee Register dev to AWS Lambda
 
 on:
   push:
