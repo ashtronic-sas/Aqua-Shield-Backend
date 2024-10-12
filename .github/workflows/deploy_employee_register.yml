@@ -92,14 +92,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda employee_register.zip
+      - name: Download Lambda employee_register_dev.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp employee_register.zip s3://aquashieldbackenddev/employee_register_dev.zip
+        run: aws s3 cp employee_register_dev.zip s3://aquashieldbackenddev/employee_register_dev.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
