@@ -31,16 +31,15 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
       # Step-4: Install dependencies 
       - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
           cd car_registry
-          pip install --no-cache-dir -r requirements.txt
+          pip install -r requirements.txt
           
-      # Step-5: Run Tests (commented out for now)
+      # Step-5: Run Tests
       # - name: Run Tests
       #   run: |
       #     source venv/bin/activate
@@ -50,25 +49,21 @@ jobs:
       - name: Create archive of dependencies and API files
         run: |
           source venv/bin/activate
-          zip -r9 $GITHUB_WORKSPACE/car_registry_dev.zip venv/lib/python3.10/site-packages -x "*.pyc" "*.pyo" "*__pycache__*"
-          cd car_registry/app
+          cd venv/lib/python3.10/site-packages
+          zip -r9 $GITHUB_WORKSPACE/car_registry_dev.zip .
+
+          cd $GITHUB_WORKSPACE/car_registry/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
           echo "SQLALCHEMY_DATABASE_URL=${{ secrets.SQLALCHEMY_DATABASE_URL }}" >> .env
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
-          zip -g $GITHUB_WORKSPACE/car_registry_dev.zip -r app -x "*.pyc" "*.pyo" "*__pycache__*"
-
+          cd $GITHUB_WORKSPACE/car_registry
+          zip -g $GITHUB_WORKSPACE/car_registry_dev.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
         run: unzip -l car_registry_dev.zip
 
-      # Step-8: Clean up temporary files
-      - name: Clean up temporary files
-        run: |
-          rm -rf venv
-          rm -rf $GITHUB_WORKSPACE/car_registry
-
-      # Step-9: Upload zip file artifact
+      # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
@@ -96,7 +91,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Step-3: Download Lambda car_registry_dev.zip
+      # Step-3: Download Lambda api.zip
       - name: Download Lambda car_registry_dev.zip
         uses: actions/download-artifact@v4
         with:
@@ -104,7 +99,7 @@ jobs:
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp car_registry_dev.zip s3://aquashieldbackenddev/car_registry_dev.zip
+        run: aws s3 cp car_registry.zip s3://aquashieldbackenddev/car_registry_dev.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
