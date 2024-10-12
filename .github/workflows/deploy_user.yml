@@ -1,9 +1,9 @@
-name: Deploy User Service to AWS Lambda
+name: Deploy User Dev Service to AWS Lambda
 
 on:
   push:
     branches: 
-      - user
+      - user_dev
     paths:
       - 'user/**'
 
@@ -11,11 +11,7 @@ jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: production
-
-    concurrency:
-      group: 'user-service-deploy'
-      cancel-in-progress: true
+    environment: depelopment
 
     steps:
       - name: Checkout Code
@@ -46,7 +42,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/user.zip .
+          zip -r9 $GITHUB_WORKSPACE/user_dev.zip .
 
           cd $GITHUB_WORKSPACE/user/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
@@ -54,10 +50,10 @@ jobs:
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
           cd $GITHUB_WORKSPACE/user
-          zip -g $GITHUB_WORKSPACE/user.zip -r app
+          zip -g $GITHUB_WORKSPACE/user_dev.zip -r app
 
       - name: Verify Zip Content
-        run: unzip -l user.zip
+        run: unzip -l user_dev.zip
 
       # Step to install AWS CLI
       - name: Install AWS CLI
@@ -75,14 +71,14 @@ jobs:
         run: aws s3 ls
 
       - name: Upload to S3
-        run: aws s3 cp user.zip s3://aquashieldbackenddev/user.zip 
+        run: aws s3 cp user_dev.zip s3://aquashieldbackenddev/user_dev.zip 
 
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: production
+    environment: depelopment
 
-    if: github.ref == 'refs/heads/user' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/user_dev' && github.event_name == 'push'
 
     steps:
       - name: Checkout Code
@@ -98,4 +94,4 @@ jobs:
       - name: Deploy new Lambda
         run: |
           set -e
-          aws lambda update-function-code --function-name user_service --s3-bucket aquashieldbackenddev --s3-key user.zip
+          aws lambda update-function-code --function-name user_dev --s3-bucket aquashieldbackenddev --s3-key user_dev.zip
