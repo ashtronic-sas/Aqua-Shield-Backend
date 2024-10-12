@@ -74,7 +74,7 @@ jobs:
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: production
+    environment: developer
 
     if: github.ref == 'refs/heads/admin_user_dev' && github.event_name == 'push'
     
