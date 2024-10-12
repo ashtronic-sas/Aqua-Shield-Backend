@@ -13,7 +13,7 @@ app = FastAPI(root_path="/dev",docs_url="/docsuser",openapi_url="/docsuser.json"
 #app = FastAPI()
 
 # Configurar la información de la aplicación
-app.title = "User  Service dev"
+app.title = "User  Service dev "
 app.version = "0.0.2"
 app.description = "api for aquashield user microservice"
 app.docs_url = "/"
