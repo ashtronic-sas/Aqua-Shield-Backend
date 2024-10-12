@@ -92,7 +92,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda employee.zip
+      - name: Download Lambda employee_dev.zip
         uses: actions/download-artifact@v4
         with:
           name: api
