@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.config.database import get_db
 from app.schemas.employee_register import EmployeeRegisterCreate, EmployeeRegisterUpdate, EmployeeRegisterResponse
@@ -33,3 +34,29 @@ def get_place_registers(place_id: int, db: Session = Depends(get_db)):
 def delete_register(id: int, db: Session = Depends(get_db)):
     delete_employee_register(db, id)
     return {"message": "EmployeeRegister deleted successfully"}
+
+@router.post("/register-record", response_description="register-record")
+async def register_record(request: Request):
+    print("register-record")
+    try:
+        # Create a JSONResponse object to send as a response
+        response = JSONResponse(
+                status_code=200,
+                content={"success": 'true', "result": 1},
+            )
+        # Get the request body data as bytes
+        databyte = await request.body()
+        # Decode the bytes data as a string
+        strRecord = databyte.decode("UTF-8")
+        # Enviar el callback a procesar en segundo plano
+        #background_tasks.add_task(save_attendance,databyte)
+        #await save_attendance(strRecord)
+        print(strRecord)
+        return response
+    # If any errors occur during the process, catch them and return a JSONResponse with an error message
+    except Exception as e:
+        response = JSONResponse(
+            status_code=500,
+            content={"success": 'false', "message": str(e)},
+        )
+        return response
