@@ -1,8 +1,8 @@
 name: Deploy User Dev Service to AWS Lambda
 
 on:
-  push:
-    branches: 
+  pull_request:
+    branches:
       - user_dev
     paths:
       - 'user/**'
@@ -11,7 +11,7 @@ jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: depelopment
+    environment: development
 
     steps:
       - name: Checkout Code
@@ -55,11 +55,9 @@ jobs:
       - name: Verify Zip Content
         run: unzip -l user_dev.zip
 
-      # Step to install AWS CLI
       - name: Install AWS CLI
-        run: sudo apt-get install -y awscli
+        uses: aws-actions/aws-cli-action@v2
 
-      # Step to configure AWS credentials after installing AWS CLI
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -76,13 +74,11 @@ jobs:
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: depelopment
-
-    if: github.ref == 'refs/heads/user_dev' && github.event_name == 'push'
+    environment: development
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -95,3 +91,4 @@ jobs:
         run: |
           set -e
           aws lambda update-function-code --function-name user_dev --s3-bucket aquashieldbackenddev --s3-key user_dev.zip
+
