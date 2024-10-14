@@ -27,7 +27,7 @@ def get_employee_by_id(id: int, db: Session = Depends(get_db)):
     return employee
 
 # Obtener un empleado por documento
-@router.get("/documento/{document}", response_model=EmployeeResponse,dependencies=[Depends(verify_token)])
+@router.get("/document/{document}", response_model=EmployeeResponse,dependencies=[Depends(verify_token)])
 def get_employee_by_document(document: str, db: Session = Depends(get_db)):
     employee = get_employee_document(db, document)
     if not employee:
