@@ -60,6 +60,8 @@ class EmployeeRegister(Base):
     entry_time = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     exit_time = Column(DateTime(timezone=True), nullable=True)
     hours_worked = Column(Float, nullable=True)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relaciones
     employee = relationship("Employee", back_populates="employee_registers")
