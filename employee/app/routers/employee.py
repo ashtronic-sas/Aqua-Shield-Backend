@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.config.database import get_db
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
-from app.service.employee import create_employee, get_employees, get_employee_by_id_db, update_employee, delete_employee
+from app.service.employee import create_employee, get_employees, get_employee_by_id_db, get_employee_document, update_employee, delete_employee
 from app.shared.utils import verify_token
 
 router = APIRouter(prefix="/employee", tags=["employee"])
@@ -24,6 +24,14 @@ def get_employee_by_id(id: int, db: Session = Depends(get_db)):
     employee = get_employee_by_id_db(db, id)
     if not employee:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found")
+    return employee
+
+# Obtener un empleado por documento
+@router.get("/documento/{document}", response_model=EmployeeResponse,dependencies=[Depends(verify_token)])
+def get_employee_by_document(document: str, db: Session = Depends(get_db)):
+    employee = get_employee_document(db, document)
+    if not employee:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found by document")
     return employee
 
 # Actualizar un empleado existente

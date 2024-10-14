@@ -19,6 +19,10 @@ def get_employees(db: Session):
 def get_employee_by_id_db(db: Session, employee_id: int):
     return db.query(Employee).filter(Employee.id == employee_id).first()
 
+# Obtener empleado por documento
+def get_employee_document(db: Session, employee_document: str):
+    return db.query(Employee).filter(Employee.document == employee_document).first()
+
 # Actualizar un empleado existente
 def update_employee(db: Session, employee_id: int, employee_update: EmployeeUpdate):
     db_employee = get_employee_by_id_db(db, employee_id)
