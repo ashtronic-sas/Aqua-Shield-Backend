@@ -3,13 +3,13 @@ name: Deploy Admin user to AWS Lambda
 on:
   push:  
     branches: 
-      - admin_user 
+      - admin_user_staging 
 
 jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: production
+    environment: staging
 
     steps:
       # Step-1: Checkout code
@@ -50,7 +50,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/admin_user.zip .
+          zip -r9 $GITHUB_WORKSPACE/admin_user_staging.zip .
 
           cd $GITHUB_WORKSPACE/admin_user/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
@@ -58,17 +58,17 @@ jobs:
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
           cd $GITHUB_WORKSPACE/admin_user
-          zip -g $GITHUB_WORKSPACE/admin_user.zip -r app
+          zip -g $GITHUB_WORKSPACE/admin_user_staging.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l admin_user.zip
+        run: unzip -l admin_user_staging.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: admin_user.zip
+          path: admin_user_staging.zip
 
           
   CD:
@@ -76,7 +76,7 @@ jobs:
     needs: [CI]
     environment: production
 
-    if: github.ref == 'refs/heads/admin_user' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/admin_user_staging' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda admin_user.zip
+      - name: Download Lambda admin_user_staging.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp admin_user.zip s3://aquashieldbackenddev/admin_user.zip
+        run: aws s3 cp admin_user_staging.zip s3://aquashieldbackenddev/admin_user_staging.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name admin_user --s3-bucket aquashieldbackenddev --s3-key admin_user.zip
+        run: aws lambda update-function-code --function-name admin_user_staging --s3-bucket aquashieldbackenddev --s3-key admin_user_staging.zip
