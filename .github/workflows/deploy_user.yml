@@ -11,7 +11,7 @@ jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: production
+    environment: staging
 
     concurrency:
       group: 'user-service-deploy'
@@ -80,7 +80,7 @@ jobs:
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: production
+    environment: staging
 
     if: github.ref == 'refs/heads/user_staging' && github.event_name == 'push'
 
