@@ -4,8 +4,8 @@ on:
   push:
     branches: 
       - user_staging
-    paths:
-      - 'user/**'
+#    paths:
+#      - 'user/**'
 
 jobs:
 
