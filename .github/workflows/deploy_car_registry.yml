@@ -1,15 +1,15 @@
-name: Deploy car registry Service to AWS Lambda
+name: Deploy car_registry_staging Service to AWS Lambda
 
 on:
   push:
     branches: 
-      - car_registry 
+      - car_registry_staging 
 
 jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: production
+    environment: staging
 
     steps:
       # Step-1: Checkout code
@@ -50,7 +50,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/car_registry.zip .
+          zip -r9 $GITHUB_WORKSPACE/car_registry_staging.zip .
 
           cd $GITHUB_WORKSPACE/car_registry/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
@@ -58,17 +58,17 @@ jobs:
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
           cd $GITHUB_WORKSPACE/car_registry
-          zip -g $GITHUB_WORKSPACE/car_registry.zip -r app
+          zip -g $GITHUB_WORKSPACE/car_registry_staging.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l car_registry.zip
+        run: unzip -l car_registry_staging.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: car_registry.zip
+          path: car_registry_staging.zip
 
           
   CD:
@@ -76,7 +76,7 @@ jobs:
     needs: [CI]
     environment: production
 
-    if: github.ref == 'refs/heads/car_registry' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/car_registry_staging' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda car_registry.zip
+      - name: Download Lambda car_registry_staging.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp car_registry.zip s3://aquashieldbackenddev/car_registry.zip
+        run: aws s3 cp car_registry_staging.zip s3://aquashieldbackenddev/car_registry_staging.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name car_registry --s3-bucket aquashieldbackenddev --s3-key car_registry.zip
+        run: aws lambda update-function-code --function-name car_registry_staging --s3-bucket aquashieldbackenddev --s3-key car_registry_staging.zip
