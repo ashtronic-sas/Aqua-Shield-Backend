@@ -61,7 +61,7 @@ jobs:
           zip -g $GITHUB_WORKSPACE/car_dev.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l car.zip
+        run: unzip -l car_dev.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
