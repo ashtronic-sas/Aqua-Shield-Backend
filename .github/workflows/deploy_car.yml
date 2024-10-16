@@ -1,15 +1,15 @@
-name: Deploy car Service to AWS Lambda
+name: Deploy car_dev Service to AWS Lambda
 
 on:
   push:
     branches: 
-      - car 
+      - car_dev 
 
 jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
 
     steps:
       # Step-1: Checkout code
@@ -50,7 +50,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/car.zip .
+          zip -r9 $GITHUB_WORKSPACE/car_dev.zip .
 
           cd $GITHUB_WORKSPACE/car/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
@@ -58,7 +58,7 @@ jobs:
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
           cd $GITHUB_WORKSPACE/car
-          zip -g $GITHUB_WORKSPACE/car.zip -r app
+          zip -g $GITHUB_WORKSPACE/car_dev.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
         run: unzip -l car.zip
@@ -68,15 +68,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: car.zip
+          path: car_dev.zip
 
           
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: production
+    environment: development
 
-    if: github.ref == 'refs/heads/car' && github.event_name == 'push'
+    #if: github.ref == 'refs/heads/car' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda car.zip
+      - name: Download Lambda car_dev.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp car.zip s3://aquashieldbackenddev/car.zip
+        run: aws s3 cp car_dev.zip s3://aquashieldbackenddev/car_dev.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name car --s3-bucket aquashieldbackenddev --s3-key car.zip
+        run: aws lambda update-function-code --function-name car_dev --s3-bucket aquashieldbackenddev --s3-key car_dev.zip
