@@ -1,9 +1,9 @@
-name: Deploy place Service to AWS Lambda
+name: Deploy place_dev Service to AWS Lambda
 
 on:
   push:
     branches: 
-      - place 
+      - place_dev 
 
 jobs:
 
@@ -58,17 +58,17 @@ jobs:
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
           cd $GITHUB_WORKSPACE/place
-          zip -g $GITHUB_WORKSPACE/place.zip -r app
+          zip -g $GITHUB_WORKSPACE/place_dev.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l place.zip
+        run: unzip -l place_dev.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: place.zip
+          path: place_dev.zip
 
           
   CD:
@@ -76,7 +76,7 @@ jobs:
     needs: [CI]
     environment: production
 
-    if: github.ref == 'refs/heads/place' && github.event_name == 'push'
+    #if: github.ref == 'refs/heads/place' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda place.zip
+      - name: Download Lambda place_dev.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp place.zip s3://aquashieldbackenddev/place.zip
+        run: aws s3 cp place_dev.zip s3://aquashieldbackenddev/place_dev.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name place --s3-bucket aquashieldbackenddev --s3-key place.zip
+        run: aws lambda update-function-code --function-name place_dev --s3-bucket aquashieldbackenddev --s3-key place_dev.zip
