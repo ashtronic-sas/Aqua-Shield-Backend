@@ -50,7 +50,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/place.zip .
+          zip -r9 $GITHUB_WORKSPACE/place_dev.zip .
 
           cd $GITHUB_WORKSPACE/place/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
