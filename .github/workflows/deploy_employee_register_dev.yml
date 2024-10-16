@@ -1,7 +1,7 @@
 name: Deploy Employee Register to AWS Lambda
 
 on:
-  push:
+  pull_request:
     branches: 
       - employee_register 
 
