@@ -1,15 +1,15 @@
-name: Deploy owner Service to AWS Lambda
+name: Deploy owner_staging Service to AWS Lambda
 
 on:
   push:
     branches:
-      - owner
+      - owner_staging
 
 jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
 
     steps:
       # Step-1: Checkout code
@@ -50,7 +50,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/owner.zip .
+          zip -r9 $GITHUB_WORKSPACE/owner_staging.zip .
 
           cd $GITHUB_WORKSPACE/owner/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
@@ -58,25 +58,25 @@ jobs:
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
           cd $GITHUB_WORKSPACE/owner
-          zip -g $GITHUB_WORKSPACE/owner.zip -r app
+          zip -g $GITHUB_WORKSPACE/owner_staging.zip -r app
       # Step-7: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l owner.zip
+        run: unzip -l owner_staging.zip
 
       # Step-8: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: owner.zip
+          path: owner_staging.zip
 
           
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: production
+    environment: development
 
-    if: github.ref == 'refs/heads/owner' && github.event_name == 'push'
+    #if: github.ref == 'refs/heads/owner' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code
@@ -92,15 +92,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda owner.zip
+      - name: Download Lambda owner_staging.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp owner.zip s3://aquashieldbackenddev/owner.zip
+        run: aws s3 cp owner_staging.zip s3://aquashieldbackenddev/owner_staging.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name owner --s3-bucket aquashieldbackenddev --s3-key owner.zip
+        run: aws lambda update-function-code --function-name owner_staging --s3-bucket aquashieldbackenddev --s3-key owner_staging.zip
