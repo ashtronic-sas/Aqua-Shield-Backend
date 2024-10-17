@@ -22,6 +22,12 @@ def get_all_user_places_endpoint(db: Session = Depends(get_db)):
 def get_places_for_user(user_id: int, db: Session = Depends(get_db)):
     return get_places_by_user(db, user_id)
 
+# Obtener las sedes asignadas a un usuario específico
+@router.get("/place/{place_id}", response_model=list[UserPlaceResponse], dependencies=[Depends(verify_token)])
+def get_users_for_place(place_id: int, db: Session = Depends(get_db)):
+    return get_users_by_place(db, place_id)
+
+
 # Eliminar la asignación de un usuario a una sede
 @router.delete("/{user_id}/{place_id}", dependencies=[Depends(verify_token)])
 def delete_user_place_endpoint(user_id: int, place_id: int, db: Session = Depends(get_db)):
