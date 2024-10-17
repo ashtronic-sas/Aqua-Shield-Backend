@@ -22,7 +22,62 @@ def get_owners(db: Session):
 
 # Obtener propietario por ID
 def get_owner_by_id(db: Session, owner_id: int):
-    return db.query(Owner).filter(Owner.id == owner_id).first()
+    owner= db.query(Owner).filter(Owner.id == owner_id).options(joinedload(Owner.car)).first()
+    return {
+        "id": owner.id,
+        "first_name": owner.first_name,
+        "second_name": owner.second_name,
+        "first_lastname": owner.first_lastname,
+        "second_lastname": owner.second_lastname,
+        "cedula": owner.cedula,
+        "created_at": owner.created_at,
+        "updated_at": owner.updated_at,
+        # Construir la lista de carros asociados
+        "cars": [
+            {
+                "id": car.id,
+                "license_plate": car.license_plate,
+                "brand": car.brand,
+                "model": car.model,
+                "owner_id": car.owner_id,
+                "created_at": car.created_at,
+                "updated_at": car.updated_at
+            }
+            for car in owner.car  # Recorre la relación de carros
+        ]
+    }
+
+# Obtener propietario por document
+def get_owner_by_cedula(db: Session, owner_cedula: int):
+    owner = (
+        db.query(Owner)
+        .filter(Owner.cedula == owner_cedula)
+        .options(joinedload(Owner.car))  # Cargar los carros relacionados
+        .first()
+    )
+    return {
+        "id": owner.id,
+        "first_name": owner.first_name,
+        "second_name": owner.second_name,
+        "first_lastname": owner.first_lastname,
+        "second_lastname": owner.second_lastname,
+        "cedula": owner.cedula,
+        "created_at": owner.created_at,
+        "updated_at": owner.updated_at,
+        # Construir la lista de carros asociados
+        "cars": [
+            {
+                "id": car.id,
+                "license_plate": car.license_plate,
+                "brand": car.brand,
+                "model": car.model,
+                "owner_id": car.owner_id,
+                "created_at": car.created_at,
+                "updated_at": car.updated_at
+            }
+            for car in owner.car  # Recorre la relación de carros
+        ]
+    }
 
 # Actualizar un propietario existente
 def update_owner(db: Session, owner_id: int, owner_update: OwnerUpdate):

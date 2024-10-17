@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.config.database import get_db
-from app.schemas.owner import OwnerCreate, OwnerUpdate, OwnerResponse
-from app.services.owner import create_owner, get_owners, get_owner_by_id, update_owner, delete_owner
+from app.schemas.owner import OwnerCreate, OwnerUpdate, OwnerResponse, OwnerResponse_cedula
+from app.services.owner import create_owner, get_owners, get_owner_by_id, get_owner_by_cedula, update_owner, delete_owner
 from app.shared.utils import verify_token
 
 router = APIRouter(prefix="/owner", tags=["Owner"])
@@ -18,9 +18,17 @@ def get_all_owners(db: Session = Depends(get_db)):
     return get_owners(db)
 
 # Obtener un propietario por ID
-@router.get("/{id}", response_model=OwnerResponse, dependencies=[Depends(verify_token)])
+@router.get("/{id}", response_model=OwnerResponse_cedula, dependencies=[Depends(verify_token)])
 def get_owner_by_id_endpoint(id: int, db: Session = Depends(get_db)):
     owner = get_owner_by_id(db, id)
+    if not owner:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Owner not found")
+    return owner
+
+# Obtener un propietario por ID
+@router.get("/cedula/{cedula}", response_model=OwnerResponse_cedula, dependencies=[Depends(verify_token)])
+def get_owner_by_cedula_endpoint(cedula: str, db: Session = Depends(get_db)):
+    owner = get_owner_by_cedula(db, cedula)
     if not owner:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Owner not found")
     return owner

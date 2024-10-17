@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 class OwnerCreate(BaseModel):
@@ -25,6 +25,31 @@ class OwnerResponse(BaseModel):
     cedula: str
     created_at: datetime
     updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+class CarResponse(BaseModel):
+    id: int
+    license_plate: str
+    brand: str
+    model: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True
+
+class OwnerResponse_cedula(BaseModel):
+    id: int
+    first_name: str
+    second_name: str
+    first_lastname: str
+    second_lastname: str
+    cedula: str
+    created_at: datetime
+    updated_at: datetime
+    cars: List[CarResponse]  # Agregar aquí la lista de carros
 
     class Config:
         orm_mode = True
