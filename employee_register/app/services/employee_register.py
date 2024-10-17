@@ -29,11 +29,16 @@ def update_employee_register(db: Session, register_id: int, update_data: Employe
 
 # Obtener registros por empleado
 def get_registers_by_employee(db: Session, employee_id: int):
+    print("se entro aquí")
     return db.query(EmployeeRegister).filter(EmployeeRegister.employee_id == employee_id).all()
 
 # Obtener registros por sede
 def get_registers_by_place(db: Session, place_id: int):
     return db.query(EmployeeRegister).filter(EmployeeRegister.place_id == place_id).all()
+
+# Obtener registros por cedula
+def get_registers_by_cedula(db: Session, cedula_employee: str):
+    return db.query(EmployeeRegister).filter(EmployeeRegister.cedula_employee == cedula_employee).all()
 
 # Eliminar un registro
 def delete_employee_register(db: Session, register_id: int):
