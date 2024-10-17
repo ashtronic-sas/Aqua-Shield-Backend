@@ -17,14 +17,14 @@ class Employee(Base):
     photo = Column(Text, nullable=True)
 
     # Relación con EmployeeRegister
-    employee_registers = relationship("EmployeeRegister", back_populates="employee")
+    employee_registers = relationship("EmployeeRegister", back_populates="employee", cascade="all, delete-orphan")
 
 class EmployeeRegister(Base):
     __tablename__ = "employee_registers"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)  # Relación con Employee
-    place_id = Column(Integer, ForeignKey("places.id"), nullable=False)  # Relación con Place
+    employee_id = Column(Integer, ForeignKey("employee.id"), ondelete='CASCADE', nullable=False)  # Relación con Employee
+    place_id = Column(Integer, ForeignKey("places.id"), ondelete='CASCADE', nullable=False)  # Relación con Place
     entry_time = Column(DateTime(timezone=True), nullable=False)
     exit_time = Column(DateTime(timezone=True), nullable=True)
     hours_worked = Column(Float, nullable=True)
@@ -32,8 +32,8 @@ class EmployeeRegister(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relaciones
-    employee = relationship("Employee", back_populates="employee_registers")
-    place = relationship("Place", back_populates="employee_registers")  # Relación con Place
+    employee = relationship("Employee", back_populates="employee_registers", cascade="all, delete-orphan")
+    place = relationship("Place", back_populates="employee_registers", cascade="all, delete-orphan")  # Relación con Place
 
 class Place(Base):
     __tablename__ = "places"
@@ -48,4 +48,4 @@ class Place(Base):
     # Relación con UserPlace
 
     # Relación con EmployeeRegister
-    employee_registers = relationship("EmployeeRegister", back_populates="place")
+    employee_registers = relationship("EmployeeRegister", back_populates="place", cascade="all, delete-orphan")
