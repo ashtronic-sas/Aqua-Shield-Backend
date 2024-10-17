@@ -10,7 +10,7 @@ class Employee(Base):
     second_name = Column(String(255), nullable=True)
     last_name = Column(String(255), nullable=False)
     second_last_name = Column(String(255), nullable=True)
-    document = Column(String(50), unique=True, nullable=False)
+    cedula = Column(String(50), unique=True, nullable=False)
     phone = Column(String(20), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
