@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.config.database import get_db
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
-from app.service.employee import create_employee, get_employees, get_employee_by_id_db, get_employee_document, update_employee, delete_employee
+from app.service.employee import create_employee, get_employees, get_employee_by_id_db, get_employee_cedula, get_employee_place, update_employee, delete_employee
 from app.shared.utils import verify_token
 
 router = APIRouter(prefix="/employee", tags=["employee"])
@@ -26,12 +26,20 @@ def get_employee_by_id(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found")
     return employee
 
-# Obtener un empleado por documento
-@router.get("/document/{document}", response_model=EmployeeResponse,dependencies=[Depends(verify_token)])
-def get_employee_by_document(document: str, db: Session = Depends(get_db)):
-    employee = get_employee_document(db, document)
+# Obtener un empleado por cedulao
+@router.get("/cedula/{cedula}", response_model=EmployeeResponse,dependencies=[Depends(verify_token)])
+def get_employee_by_cedula(cedula: str, db: Session = Depends(get_db)):
+    employee = get_employee_cedula(db, cedula)
     if not employee:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found by document")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found by cedula")
+    return employee
+
+# Obtener empleados por place
+@router.get("/place/{place_id}", response_model=list[EmployeeResponse],dependencies=[Depends(verify_token)])
+def get_employee_by_place(place_id: int, db: Session = Depends(get_db)):
+    employee = get_employee_place(db, place_id)
+    if not employee:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found by place")
     return employee
 
 # Actualizar un empleado existente

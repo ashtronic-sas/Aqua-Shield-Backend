@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from app.models.employee import Employee
+from app.models.employee import Employee, EmployeePlace
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
 # Crear un nuevo empleado
@@ -19,9 +19,14 @@ def get_employees(db: Session):
 def get_employee_by_id_db(db: Session, employee_id: int):
     return db.query(Employee).filter(Employee.id == employee_id).first()
 
-# Obtener empleado por documento
-def get_employee_document(db: Session, employee_document: str):
-    return db.query(Employee).filter(Employee.document == employee_document).first()
+# Obtener empleado por cedulao
+def get_employee_cedula(db: Session, employee_cedula: str):
+    return db.query(Employee).filter(Employee.cedula == employee_cedula).first()
+
+# Obtener empleados por place
+def get_employee_place(db: Session, place_id: int):
+    # Obtener los employee_id asociados al place_id en EmployeePlace
+    return db.query(Employee).join(EmployeePlace, Employee.id == EmployeePlace.employee_id).filter(EmployeePlace.place_id == place_id).all()
 
 # Actualizar un empleado existente
 def update_employee(db: Session, employee_id: int, employee_update: EmployeeUpdate):
