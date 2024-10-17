@@ -18,7 +18,7 @@ class Employee(Base):
 
     # Relación con EmployeeRegister
     employee_places = relationship("EmployeePlace", back_populates="employee",cascade="all, delete")
-    employee_registers = relationship("EmployeeRegister", back_populates="employee",cascade="all, delete")
+    employee_registers = relationship("EmployeeRegister", back_populates="employee", )
 
 class EmployeePlace(Base):
     __tablename__ = "employee_places"
