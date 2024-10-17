@@ -25,7 +25,9 @@ class UserPlace(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     place_id = Column(Integer, ForeignKey("places.id"), nullable=False)
-    access_level = Column(String(50), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    #access_level = Column(String(50), nullable=False)
 
     user = relationship("User", back_populates="user_places")
     place = relationship("Place", back_populates="user_places")
@@ -35,7 +37,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, nullable=False)
-    password = Column(String(255), nullable=False)  # Contraseña encriptada
+    #password = Column(String(255), nullable=False)  # Contraseña encriptada
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

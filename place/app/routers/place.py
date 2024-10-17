@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.config.database import get_db
-from app.schemas.place import PlaceCreate, PlaceUpdate, PlaceResponse
-from app.services.place import create_place, get_places, get_place_by_id, update_place, delete_place
+from app.schemas.place import PlaceCreate, PlaceUpdate, PlaceResponse, PlaceResponseMod
+from app.services.place import create_place, get_places, get_place_by_id, get_place_by_Nit, get_place_by_address, update_place, delete_place
 from app.shared.utils import verify_token
 
 router = APIRouter( tags=["Place"], prefix="/place")
@@ -24,6 +24,23 @@ def get_place_by_id_endpoint(id: int, db: Session = Depends(get_db)):
     if not place:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Place not found")
     return place
+
+# Obtener una sede por Nit
+@router.get("/nit/{nit}", response_model=PlaceResponseMod, dependencies=[Depends(verify_token)])
+def get_place_by_Nit_endpoint(nit: str, db: Session = Depends(get_db)):
+    place = get_place_by_Nit(db, nit)
+    if not place:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Place not found")
+    return place
+
+# Obtener una sede por address
+@router.get("/address/{address}", response_model=PlaceResponseMod, dependencies=[Depends(verify_token)])
+def get_place_by_address_endpoint(address: str, db: Session = Depends(get_db)):
+    place = get_place_by_address(db, address)
+    if not place:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Place not found")
+    return place
+
 
 # Actualizar una sede existente
 @router.put("/{id}", response_model=PlaceResponse, dependencies=[Depends(verify_token)])

@@ -25,3 +25,24 @@ class PlaceResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True 
+# Esquema para la respuesta de Place modificado
+class PlaceResponseMod(BaseModel):
+    id: int
+    name: str
+    address: str
+    nit: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+    users: list[UserResponse]  # Lista de usuarios asociados
+
+    class Config:
+        orm_mode = True
