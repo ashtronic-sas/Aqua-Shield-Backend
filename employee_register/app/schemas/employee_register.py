@@ -5,7 +5,9 @@ from datetime import datetime
 class EmployeeRegisterCreate(BaseModel):
     employee_id: int
     place_id: int
-    entry_time: datetime
+    cedula_employee: str
+    event_type: str
+    photo_employee: Optional[str]
 
 class EmployeeRegisterUpdate(BaseModel):
     exit_time: Optional[datetime]
@@ -13,10 +15,13 @@ class EmployeeRegisterUpdate(BaseModel):
 class EmployeeRegisterResponse(BaseModel):
     id: int
     employee_id: int
+    cedula_employee: str
     place_id: int
-    entry_time: datetime
-    exit_time: Optional[datetime]
-    hours_worked: Optional[float]
+    date_time: Optional[datetime]
+    photo_employee: Optional[str]
+    event_type: str
+    updapte_at: Optional[datetime]
+    create_at: Optional[datetime]
 
     class Config:
         orm_mode = True
