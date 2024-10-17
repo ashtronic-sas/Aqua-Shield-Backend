@@ -74,7 +74,7 @@ jobs:
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: production
+    environment: staging
 
     #if: github.ref == 'refs/heads/employee_register_staging' && github.event_name == 'push'
     
