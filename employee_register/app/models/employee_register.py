@@ -6,8 +6,8 @@ class EmployeeRegister(Base):
     __tablename__ = "employee_registers"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)  # Relación con Employee
-    place_id = Column(Integer, ForeignKey("places.id"), nullable=False)  # Relación con Place
+    employee_id = Column(Integer, ForeignKey("employee.id"), ondelete='CASCADE', nullable=False)  # Relación con Employee
+    place_id = Column(Integer, ForeignKey("places.id"), ondelete='CASCADE', nullable=False)  # Relación con Place
     cedula_employee = Column(String(50), nullable=False)
     photo_employee = Column(Text, nullable=False)
     entry_time = Column(DateTime(timezone=True), nullable=False)
@@ -19,7 +19,7 @@ class EmployeeRegister(Base):
 
 
     # Relaciones
-    employee = relationship("Employee", back_populates="employee_registers")
+    employee = relationship("Employee", back_populates="employee_registers", cascade="all, delete-orphan")
 
 
 class Employee(Base):
@@ -37,8 +37,8 @@ class Employee(Base):
     photo = Column(Text, nullable=True)
 
     # Relación con EmployeeRegister
-    employee_places = relationship("EmployeePlace", back_populates="employee")
-    employee_registers = relationship("EmployeeRegister", back_populates="employee")
+    employee_places = relationship("EmployeePlace", back_populates="employee", cascade="all, delete-orphan")
+    employee_registers = relationship("EmployeeRegister", back_populates="employee", cascade="all, delete-orphan")
 
 class Place(Base):
     __tablename__ = "places"
@@ -51,20 +51,20 @@ class Place(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relación inversa
-    employee_places = relationship("EmployeePlace", back_populates="place")
+    employee_places = relationship("EmployeePlace", back_populates="place", cascade="all, delete-orphan")
 
 class EmployeePlace(Base):
     __tablename__ = "employee_places"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
-    place_id = Column(Integer, ForeignKey("places.id"), nullable=False)
+    employee_id = Column(Integer, ForeignKey("employee.id"), ondelete='CASCADE', nullable=False)
+    place_id = Column(Integer, ForeignKey("places.id"), ondelete='CASCADE', nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relaciones
-    employee = relationship("Employee", back_populates="employee_places")
-    place = relationship("Place", back_populates="employee_places")
+    employee = relationship("Employee", back_populates="employee_places", cascade="all, delete-orphan")
+    place = relationship("Place", back_populates="employee_places", cascade="all, delete-orphan")
 
     # Validación de duplicados
     __table_args__ = (UniqueConstraint('employee_id', 'place_id', name='_employee_place_uc'),)
