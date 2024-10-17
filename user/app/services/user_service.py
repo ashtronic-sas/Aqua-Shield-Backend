@@ -1,6 +1,7 @@
-from app.models.models import User
+from app.models.models import User, UserPlace, Place
 from app.schemas.user import UserCreate
 from app.config.security import get_password_hash, verify_password
+from app.auth.jwt_handler import create_access_token
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -20,8 +21,16 @@ def create_user(user: UserCreate, db: Session):
 def authenticate_user(db: Session, username: str, password: str):
     user = db.query(User).filter(User.username == username).first()
     if not user or not verify_password(password, user.hashed_password):
-        return False
-    return user
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token = create_access_token(data={"sub": user.username})
+    places = (
+    db.query(Place)
+    .join(UserPlace, Place.id == UserPlace.place_id)
+    .filter(UserPlace.user_id == user.id)  # Filtrar por el user_id proporcionado
+    .all()  # Obtener todos los resultados
+    )
+    return {"access_token": access_token, "token_type": "bearer" , "places": places}
+
 
 #     Obtiene un usuario por su ID.
 def get_user_by_id(id: int, db: Session):

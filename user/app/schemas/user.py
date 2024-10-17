@@ -75,3 +75,8 @@ class UserLogin(BaseModel):
 class UserResponse(BaseModel):
     message: str
     user: Dict[str, str]
+
+class UserAuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    places: object

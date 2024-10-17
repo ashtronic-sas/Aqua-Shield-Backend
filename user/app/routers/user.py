@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreate, UserOut, UserLogin , UserResponse,UserUpdate
+from app.schemas.user import UserCreate, UserOut, UserLogin , UserResponse,UserUpdate, UserAuthResponse
 from app.services.user_service import create_user, authenticate_user,get_user_by_id,update_user_by_id,delete_user_by_id,get_all_users
 from app.config.database import get_db
 from app.auth.jwt_handler import create_access_token
@@ -33,7 +33,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     }
     return UserResponse(message="User registered successfully", user=user_data)
 
-@router.post("/login", response_model=Dict[str, str])
+@router.post("/login", response_model=UserAuthResponse)
 def login(user: UserLogin, db: Session = Depends(get_db)):
     """
     Maneja el proceso de inicio de sesión de un usuario.
@@ -48,12 +48,7 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     Raises:
         HTTPException: Si las credenciales son inválidas, se lanza una excepción con el código de estado 401 y un mensaje de detalle.
     """
-    db_user = authenticate_user(db, user.username, user.password)
-
-    if not db_user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    access_token = create_access_token(data={"sub": db_user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return authenticate_user(db, user.username, user.password)
 
 @router.get("/{id}", response_model=UserOut, dependencies=[Depends(verify_token)])
 def read_users_id(id: int, db: Session = Depends(get_db)):
