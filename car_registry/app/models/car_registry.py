@@ -9,7 +9,7 @@ class Car_Register(Base):
     id = Column(Integer, primary_key=True, index=True)
     car_id = Column(Integer, ForeignKey("car.id"), nullable=False)
     place_id = Column(Integer, ForeignKey("places.id"), nullable=False)  # Relación con Place
-    #datetime = Column(DateTime(timezone=True), nullable=False)
+    date_time = Column(DateTime(timezone=True), nullable=False)
     event_type = Column(String(50), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

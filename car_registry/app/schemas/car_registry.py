@@ -5,7 +5,7 @@ from datetime import datetime
 class CarRegistryCreate(BaseModel):
 
     car_id: int
-    #datetime: datetime
+    date_time: datetime
     place_id: int
     event_type: str
 
@@ -13,7 +13,7 @@ class CarRegistryResponse(BaseModel):
     
     id: int
     car_id: int
-    #datetime: datetime
+    date_time: datetime
     place_id: int
     event_type: str
     created_at  = datetime
@@ -22,7 +22,7 @@ class CarRegistryResponse(BaseModel):
 class CarRegistryUpdate(BaseModel):
 
     car_id: Optional[int]
-    #datetime: Optional[datetime]
+    date_time: Optional[datetime]
     place_id: int
     event_type: Optional[str]
 
@@ -41,7 +41,7 @@ class CarRegistryResponseCar_id(BaseModel):
     
     id: int
     car_id: int
-    #datetime: datetime
+    date_time: datetime
     place: PlaceResponse
     event_type: str
     created_at  = datetime
@@ -65,7 +65,7 @@ class CarRegistryResponsePlace_id(BaseModel):
     
     id: int
     car: CarResponse
-    #datetime: datetime
+    date_time: datetime
     place_id: int 
     event_type: str
     created_at  = datetime
@@ -74,6 +74,7 @@ class CarRegistryResponsePlace_id(BaseModel):
         orm_mode = True
 class CarRegistryResponse_id(BaseModel):
     id: int
+    date_time: datetime
     event_type: str
     created_at: datetime
     updated_at: datetime

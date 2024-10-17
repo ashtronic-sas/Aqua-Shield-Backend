@@ -6,7 +6,7 @@ from app.schemas.car_registry import CarRegistryCreate, CarRegistryResponseCar_i
 def create_car_registry_db(db: Session, car: CarRegistryCreate):
     db_car = Car_Register(
         car_id=car.car_id,
-        #datetime=car.datetime,
+        date_time=car.datetime,
         place_id=car.place_id,
         event_type=car.event_type
     )
@@ -24,18 +24,14 @@ def update_car_registry_db(db: Session, car_id: int, car: CarRegistryCreate):
         db_car.car_id = car.car_id
     if car.event_type is not None:
         db_car.event_type = car.even_type
-    '''if car.datetime is not None:
-        db_car.datetime = car.datetime'''
+    if car.date_time is not None:
+        db_car.date_time = car.date_time
     
     db.commit()
     db.refresh(db_car)
     return db_car.__dict__
 
 def get_car_registry_by_id_db(db: Session, id: int):
-    '''db_car = db.query(Car_Register).filter(Car_Register.id == id).first()
-    if db_car is None:
-        raise HTTPException(status_code=404, detail="Car not found")
-    return db_car.__dict__'''
     # Obtenemos el registro del car_register
     car_register = db.query(Car_Register).filter(Car_Register.id == id).first()
 
@@ -59,6 +55,7 @@ def get_car_registry_by_id_db(db: Session, id: int):
     print(place.__dict__)
     return {
         "id": car_register.id,
+        "date_time": car_register.date_time,
         "event_type": car_register.event_type,
         "created_at": car_register.created_at,
         "updated_at": car_register.updated_at,
@@ -77,6 +74,7 @@ def get_car_registry_by_car_id_db(db: Session, car_id: int):
             {
                 "id": car_register.id,
                 "car_id": car_register.car_id,
+                "date_time": car_register.date_time,
                 "event_type": car_register.event_type,
                 "created_at": car_register.created_at,
                 "updated_at": car_register.updated_at,
@@ -109,6 +107,7 @@ def get_car_registry_by_place_id_db(db: Session, place_id: int):
         {
             "id": car_register.id,
             "place_id": car_register.place_id,
+            "date_time": car_register.date_time,
             "event_type": car_register.event_type,
             "created_at": car_register.created_at,
             "updated_at": car_register.updated_at,
