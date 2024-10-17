@@ -35,6 +35,12 @@ def get__car_by_id_db(db: Session, id: int):
         raise HTTPException(status_code=404, detail="Car not found")
     return car
 
+def get_car_by_license_plate_db(db: Session, license_plate: str):
+    car = db.query(Car).filter(Car.license_plate == license_plate).first()
+    if car is None:
+        raise HTTPException(status_code=404, detail="Car not found")
+    return car
+
 # Función para actualizar un carro por su id
 def update_car_by_id_db(db: Session, id: int, car: CarUpdate):
 
