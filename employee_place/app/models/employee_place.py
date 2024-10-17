@@ -55,7 +55,7 @@ class EmployeeRegister(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)  # Relación con Employee
-    place_id = Column(Integer, ForeignKey("places.id"), nullable=False)  # Relación con Place
+    place_id = Column(Integer, ForeignKey("places.id"),, nullable=False)  # Relación con Place
     cedula_employee = Column(String(50), nullable=False)
     photo_employee = Column(Text, nullable=False)
     entry_time = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
