@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.config.database import get_db
 from app.schemas.employee_register import EmployeeRegisterCreate, EmployeeRegisterUpdate, EmployeeRegisterResponse
 from app.services.employee_register import create_employee_register, update_employee_register, get_registers_by_employee, get_registers_by_place, get_registers_by_cedula, delete_employee_register
 from app.shared.utils import verify_token
+
 
 router = APIRouter(prefix="/employee_register", tags=["employee_register"])
 
@@ -38,3 +40,26 @@ def get_cedula_registers(cedula_employee: str, db: Session = Depends(get_db)):
 def delete_register(id: int, db: Session = Depends(get_db)):
     delete_employee_register(db, id)
     return {"message": "EmployeeRegister deleted successfully"}
+
+@router.post("/register-record", response_description="register-record")
+async def register_record(request: Request, db: Session = Depends(get_db)):
+
+    try:
+        # Create a JSONResponse object to send as a response
+        response = JSONResponse(
+                status_code=200,
+                content={"success": 'true', "result": 1},
+            )
+
+        databyte = await request.body()
+        strRecord = databyte.decode("UTF-8")
+        parse_parameters(db,strRecord)
+
+        return response
+
+    except Exception as e:
+        response = JSONResponse(
+            status_code=500,
+            content={"success": 'false', "message": str(e)},
+        )
+        return response
