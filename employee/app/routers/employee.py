@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.config.database import get_db
-from app.schemas.employee import EmployeeCreate, EmployeeUpdate, EmployeeResponse
+from app.schemas.employee import EmployeeCreate, EmployeeResponse_with_EmployeePlace, EmployeeUpdate, EmployeeResponse
 from app.service.employee import create_employee, get_employees, get_employee_by_id_db, get_employee_cedula, get_employee_place, update_employee, delete_employee
 from app.shared.utils import verify_token
 
@@ -9,7 +9,7 @@ router = APIRouter(prefix="/employee", tags=["employee"])
 
 
 # Crear un nuevo empleado
-@router.post("/", response_model=EmployeeResponse,dependencies=[Depends(verify_token)])
+@router.post("/", response_model=EmployeeResponse_with_EmployeePlace,dependencies=[Depends(verify_token)])
 def create_new_employee(employee: EmployeeCreate, db: Session = Depends(get_db)):
     return create_employee(db, employee)
 

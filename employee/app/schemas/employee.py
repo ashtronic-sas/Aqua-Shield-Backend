@@ -11,6 +11,10 @@ class EmployeeCreate(BaseModel):
     cedula: str
     photo   : Optional[str]
     phone: str
+    place_id: int
+
+
+
 
 
 class EmployeeUpdate(BaseModel):
@@ -43,3 +47,17 @@ class EmployeeResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class EmployeePlaceResponse(BaseModel):
+    id: int
+    employee_id: int
+    place_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        orm_mode = True  
+class EmployeeResponse_with_EmployeePlace(BaseModel):
+    employee: EmployeeResponse
+    employee_place: EmployeePlaceResponse

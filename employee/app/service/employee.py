@@ -1,15 +1,39 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from app.models.employee import Employee, EmployeePlace
+from app.models.employee import Employee, EmployeePlace, Place
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
 # Crear un nuevo empleado
 def create_employee(db: Session, employee: EmployeeCreate):
-    db_employee = Employee(**employee.dict())
+    #crete employee
+    place_id= employee.place_id
+    employee_dict= employee.dict()
+    employee_dict.pop("place_id",None)
+    db_employee = Employee(**employee_dict)
     db.add(db_employee)
     db.commit()
     db.refresh(db_employee)
-    return db_employee
+
+    # create employee_place asociado
+
+    # Verificar si el place_id existe en la tabla place
+    place = db.query(Place).filter(Place.id == place_id).first()
+    # Verificar si la combinación de employee_id y place_id ya existe en la tabla employee_place
+    existing_employee_place = db.query(EmployeePlace).filter(
+        EmployeePlace.employee_id == db_employee.id,
+        EmployeePlace.place_id == place_id
+    ).first()
+
+    if place is None:
+        raise HTTPException(status_code=400, detail="Place ID does not exist")
+    db_employee_place = EmployeePlace(
+        employee_id=db_employee.id,
+        place_id=place_id
+    )
+    db.add(db_employee_place)
+    db.commit()
+    db.refresh(db_employee_place)
+    return {"employee":db_employee , "employee_place": db_employee_place}
 
 # Obtener todos los empleados
 def get_employees(db: Session):
