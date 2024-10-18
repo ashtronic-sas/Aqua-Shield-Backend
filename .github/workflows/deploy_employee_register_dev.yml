@@ -1,15 +1,15 @@
 name: Deploy Employee Register Dev to AWS Lambda
 
 on:
-  pull_request:
+  push:
     branches:
-      - employee_register_dev
+      - employee_register
 
 jobs:
 
   CI:
     runs-on: ubuntu-latest
-    environment: development
+    environment: production
 
     if: github.event.pull_request.merged == true
 
@@ -47,7 +47,7 @@ jobs:
         run: |
           source venv/bin/activate
           cd venv/lib/python3.10/site-packages
-          zip -r9 $GITHUB_WORKSPACE/employee_register_dev.zip .
+          zip -r9 $GITHUB_WORKSPACE/employee_register.zip .
 
           cd $GITHUB_WORKSPACE/employee_register/app
           echo "SECRET_KEY=${{ secrets.SECRET_KEY_JWT }}" > .env
@@ -55,23 +55,23 @@ jobs:
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}" >> .env
           cd ..
           cd $GITHUB_WORKSPACE/employee_register
-          zip -g $GITHUB_WORKSPACE/employee_register_dev.zip -r app
+          zip -g $GITHUB_WORKSPACE/employee_register.zip -r app
 
       # Step-6: Verify Zip Content
       - name: Verify Zip Content
-        run: unzip -l employee_register_dev.zip
+        run: unzip -l employee_register.zip
 
       # Step-7: Upload zip file artifact
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v4
         with:
           name: api
-          path: employee_register_dev.zip
+          path: employee_register.zip
 
   CD:
     runs-on: ubuntu-latest
     needs: [CI]
-    environment: development
+    environment: production
 
     if: github.event.pull_request.merged == true
     
@@ -89,15 +89,15 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step-3: Download Lambda api.zip
-      - name: Download Lambda employee_register_dev.zip
+      - name: Download Lambda employee_register.zip
         uses: actions/download-artifact@v4
         with:
           name: api
 
       # Step-4: Upload to S3
       - name: Upload to S3
-        run: aws s3 cp employee_register_dev.zip s3://aquashieldbackenddev/employee_register_dev.zip
+        run: aws s3 cp employee_register.zip s3://aquashieldbackenddev/employee_register.zip
 
       # Step-5: Deploy new Lambda
       - name: Deploy new Lambda
-        run: aws lambda update-function-code --function-name employee_register_dev --s3-bucket aquashieldbackenddev --s3-key employee_register_dev.zip
+        run: aws lambda update-function-code --function-name employee_register --s3-bucket aquashieldbackenddev --s3-key employee_register.zip
