@@ -25,7 +25,7 @@ class EmployeePlace(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
-    place_id = Column(Integer, ForeignKey("places.id", nullable=False)
+    place_id = Column(Integer, ForeignKey("places.id", nullable=False))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
