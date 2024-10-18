@@ -8,10 +8,13 @@ class EmployeeCreate(BaseModel):
     second_name: Optional[str]
     last_name: str
     second_last_name: Optional[str]
-    document: str
+    cedula: str
     photo   : Optional[str]
-    document: str
     phone: str
+    place_id: int
+
+
+
 
 
 class EmployeeUpdate(BaseModel):
@@ -20,28 +23,41 @@ class EmployeeUpdate(BaseModel):
     second_name: Optional[str]
     last_name: Optional[str]
     second_last_name: Optional[str]
-    document:  Optional[str]
+    cedula:  Optional[str]
     photo   : Optional[str]
-    document:  Optional[str]
+    cedula:  Optional[str]
     phone:  Optional[str]
-    document: Optional[str]
+    cedula: Optional[str]
     phone: Optional[str]
 
 class EmployeeResponse(BaseModel):
 
-    id: int
-    first_name: str
+    id: Optional[int]
+    first_name: Optional[str]
     second_name: Optional[str]
-    last_name: str
+    last_name: Optional[str]
     second_last_name: Optional[str]
-    document: str
     photo   : Optional[str]
-    document: str
-    phone: str
-    document: Optional[str]
+    cedula: Optional[str]
     phone: Optional[str]
+    cedula: Optional[str]
+    phone: Optional[str]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True
+
+
+class EmployeePlaceResponse(BaseModel):
+    id: int
+    employee_id: int
+    place_id: int
     created_at: datetime
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        orm_mode = True  
+class EmployeeResponse_with_EmployeePlace(BaseModel):
+    employee: EmployeeResponse
+    employee_place: EmployeePlaceResponse
