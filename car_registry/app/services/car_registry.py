@@ -50,5 +50,6 @@ def delete_car_registry_db(db: Session, car_id: int):
     db.commit()
     return {"message": "Car deleted"}
 
-def get_all_car_registry(db: Session):
-    return db.query(Car_Register).all()
+def get_all_car_registry_db(db: Session):
+    car_registries = db.query(Car_Register).all()
+    return [CarRegistryResponse.from_orm(car) for car in car_registries]

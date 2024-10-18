@@ -19,6 +19,9 @@ class CarRegistryResponse(BaseModel):
     created_at  = datetime
     updated_at = datetime
 
+    class Config:
+        orm_mode = True
+
 class CarRegistryUpdate(BaseModel):
 
     car_id: Optional[int]
