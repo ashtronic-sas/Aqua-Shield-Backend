@@ -16,8 +16,8 @@ class Employee(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     photo = Column(Text, nullable=True)
 
+    # Relación con EmployeeRegister
     employee_registers = relationship("EmployeeRegister", back_populates="employee", cascade="all, delete")
-    employee_places = relationship("EmployeePlace", back_populates="employee", cascade="all, delete")  # Nueva relación
 
 class EmployeeRegister(Base):
     __tablename__ = "employee_registers"
@@ -36,23 +36,7 @@ class EmployeeRegister(Base):
 
     # Relaciones
     employee = relationship("Employee", back_populates="employee_registers", cascade="all, delete")
-    place = relationship("Place", back_populates="employee_registers", cascade="all, delete")
-
-class EmployeePlace(Base):
-    __tablename__ = "employee_places"
-
-    id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)
-    place_id = Column(Integer, ForeignKey("places.id"), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
-    # Relaciones
-    employee = relationship("Employee", back_populates="employee_places", cascade="all, delete")  # Relación corregida
     place = relationship("Place", back_populates="employee_registers", cascade="all, delete")  
-
-    # Validación de duplicados
-    __table_args__ = (UniqueConstraint('employee_id', 'place_id', name='_employee_place_uc'),)
 
 class Place(Base):
     __tablename__ = "places"
