@@ -76,7 +76,7 @@ jobs:
     needs: [CI]
     environment: staging
 
-    if: github.ref == 'refs/heads/employee_staging' && github.event_name == 'push'
+    #if: github.ref == 'refs/heads/employee_staging' && github.event_name == 'push'
     
     steps:
       # Step-1: Checkout code

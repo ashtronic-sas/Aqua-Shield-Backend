@@ -36,8 +36,8 @@ class EmployeeRegister(Base):
 
     # Relaciones
     
-    employee = relationship("Employee", back_populates="employee_registers")
-    place = relationship("Place", back_populates="employee_registers")
+    employee = relationship("Employee", back_populates="employee_registers", cascade="all, delete")
+    place = relationship("Place", back_populates="employee_registers", cascade="all, delete")
 
 
 class EmployeePlace(Base):
