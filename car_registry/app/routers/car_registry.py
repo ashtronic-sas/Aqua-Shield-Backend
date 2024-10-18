@@ -1,12 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.config.database import get_db
-from app.schemas.car_registry import CarRegistryCreate, CarRegistryResponse, CarRegistryResponseCar_id, CarRegistryResponse_id, CarRegistryResponsePlace_id, CarRegistryUpdate
-from app.services.car_registry import create_car_registry_db,update_car_registry_db,get_car_registry_by_id_db,get_car_registry_by_car_id_db, get_car_registry_by_place_id_db, delete_car_registry_db
+from app.schemas.car_registry import CarRegistryCreate, CarRegistryResponse, CarRegistryResponseCar_id, CarRegistryResponse_id, CarRegistryResponsePlace_id, CarRegistryUpdate,CarRegistryResponse_all
+from app.services.car_registry import create_car_registry_db,update_car_registry_db,get_car_registry_by_id_db,get_car_registry_by_car_id_db, get_car_registry_by_place_id_db, delete_car_registry_db,get_car_all_registry_db
 from app.shared.utils import verify_token
 
 router = APIRouter( prefix="/car_registry", tags=["car_registry"] )
 
+@router.get("/", response_model=list[CarRegistryResponse_all], dependencies=[Depends(verify_token)])
+def get_car_all_registry(db: Session = Depends(get_db)):
+    return get_car_all_registry_db(db)
 
 @router.post("/", response_model=CarRegistryResponse, dependencies=[Depends(verify_token)])
 def create_car_registry(car_registry: CarRegistryCreate, db: Session = Depends(get_db)):

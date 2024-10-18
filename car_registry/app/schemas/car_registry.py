@@ -18,6 +18,8 @@ class CarRegistryResponse(BaseModel):
     event_type: str
     created_at  = datetime
     updated_at = datetime
+    class Config:
+        orm_mode = True
 
 class CarRegistryUpdate(BaseModel):
 
@@ -72,7 +74,20 @@ class CarRegistryResponsePlace_id(BaseModel):
     updated_at = datetime
     class Config:
         orm_mode = True
+
 class CarRegistryResponse_id(BaseModel):
+    id: int
+    date_time: datetime
+    event_type: str
+    created_at: datetime
+    updated_at: datetime
+    car: CarResponse  # Anidamos el esquema CarResponse completo
+    place: PlaceResponse  # Anidamos el esquema PlaceResponse completo
+
+    class Config:
+        orm_mode = True
+
+class CarRegistryResponse_all(BaseModel):
     id: int
     date_time: datetime
     event_type: str

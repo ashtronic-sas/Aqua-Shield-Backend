@@ -6,7 +6,7 @@ from app.schemas.car_registry import CarRegistryCreate, CarRegistryResponseCar_i
 def create_car_registry_db(db: Session, car: CarRegistryCreate):
     db_car = Car_Register(
         car_id=car.car_id,
-        date_time=car.datetime,
+        date_time=car.date_time,  # Corrected attribute name
         place_id=car.place_id,
         event_type=car.event_type
     )
@@ -132,3 +132,41 @@ def delete_car_registry_db(db: Session, car_id: int):
     db.delete(db_car)
     db.commit()
     return {"message": "Car deleted"}
+
+def get_car_all_registry_db(db: Session):
+
+    
+    db_car_registers = db.query(Car_Register).options(joinedload(Car_Register.car), joinedload(Car_Register.place)).all()
+
+    if not db_car_registers:
+        raise HTTPException(status_code=404, detail="No car register found")
+    
+    return [
+        {
+            "id": car_register.id,
+            "car_id": car_register.car_id,
+            "place_id": car_register.place_id,
+            "date_time": car_register.date_time,
+            "event_type": car_register.event_type,
+            "created_at": car_register.created_at,
+            "updated_at": car_register.updated_at,
+            "car": {
+                "id": car_register.car.id,
+                "license_plate": car_register.car.license_plate,
+                "brand": car_register.car.brand,
+                "model": car_register.car.model,
+                "owner_id": car_register.car.owner_id,
+                "created_at": car_register.car.created_at,
+                "updated_at": car_register.car.updated_at
+            },
+            "place": {
+                "id": car_register.place.id,
+                "name": car_register.place.name,
+                "address": car_register.place.address,
+                "nit": car_register.place.nit,
+                "created_at": car_register.place.created_at,
+                "updated_at": car_register.place.updated_at
+            }
+        }
+        for car_register in db_car_registers
+    ]
