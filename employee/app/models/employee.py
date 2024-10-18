@@ -16,7 +16,6 @@ class Employee(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     photo = Column(Text, nullable=True)
 
-    employee_places = relationship("EmployeePlace", back_populates="employee", cascade="all, delete")
     employee_registers = relationship("EmployeeRegister", back_populates="employee", cascade="all, delete")
 
 class EmployeeRegister(Base):
@@ -67,11 +66,8 @@ class Place(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    # Relación con UserPlace
 
     # Relación con EmployeeRegister
-    
     employee_registers = relationship("EmployeeRegister", back_populates="place", cascade="all, delete")
-    employee_places = relationship("EmployeePlace", back_populates="place", cascade="all, delete")
 
 
