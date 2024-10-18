@@ -54,15 +54,15 @@ class EmployeeRegister(Base):
     __tablename__ = "employee_registers"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employee.id"),nullable=False)  # Relación con Employee
+    employee_id = Column(Integer, ForeignKey("employee.id"), nullable=False)  # Relación con Employee
     place_id = Column(Integer, ForeignKey("places.id"), nullable=False)  # Relación con Place
-    cedula_employee = Column(String(50), nullable=False)
+    cedula_employee = Column(String(50), nullable=False) # Relación con Employee
     photo_employee = Column(Text, nullable=False)
-    entry_time = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
-    exit_time = Column(DateTime(timezone=True), nullable=True)
-    hours_worked = Column(Float, nullable=True)
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    date_time = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    event_type = Column(String(10), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
 
     # Relaciones
     employee = relationship("Employee", back_populates="employee_registers",cascade="all, delete")
