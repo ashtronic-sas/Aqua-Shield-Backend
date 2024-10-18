@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
-    if: github.event.pull_request.merged == true
+    
+    #if: github.event.pull_request.merged == true
 
     steps:
       # Step-1: Checkout code
@@ -73,7 +74,7 @@ jobs:
     needs: [CI]
     environment: production
 
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     
     steps:
       # Step-1: Checkout code
