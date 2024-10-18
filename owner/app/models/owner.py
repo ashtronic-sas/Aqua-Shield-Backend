@@ -14,7 +14,7 @@ class Owner(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    car = relationship('Car', back_populates='owner')
+    car = relationship('Car', back_populates='owner' ,cascade="all, delete")
 
 class Car(Base):
     __tablename__ = "car"
@@ -27,6 +27,6 @@ class Car(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-    owner = relationship('Owner', back_populates='car')
+    owner = relationship('Owner', back_populates='car' ,cascade="all, delete")
 
 
