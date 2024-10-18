@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, Float, ForeignKey,Text, UniqueConstraint
+from sqlalchemy import Column, Integer, String, DateTime, func, Float, ForeignKey, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.config.database import Base
 
@@ -17,6 +17,7 @@ class Employee(Base):
     photo = Column(Text, nullable=True)
 
     employee_registers = relationship("EmployeeRegister", back_populates="employee", cascade="all, delete")
+    employee_places = relationship("EmployeePlace", back_populates="employee", cascade="all, delete")  # Nueva relación
 
 class EmployeeRegister(Base):
     __tablename__ = "employee_registers"
@@ -34,10 +35,8 @@ class EmployeeRegister(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relaciones
-    
     employee = relationship("Employee", back_populates="employee_registers", cascade="all, delete")
     place = relationship("Place", back_populates="employee_registers", cascade="all, delete")
-
 
 class EmployeePlace(Base):
     __tablename__ = "employee_places"
@@ -49,12 +48,11 @@ class EmployeePlace(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # Relaciones
-    employee = relationship("Employee", back_populates="employee_registers", cascade="all, delete")
+    employee = relationship("Employee", back_populates="employee_places", cascade="all, delete")  # Relación corregida
     place = relationship("Place", back_populates="employee_registers", cascade="all, delete")  
 
     # Validación de duplicados
     __table_args__ = (UniqueConstraint('employee_id', 'place_id', name='_employee_place_uc'),)
-
 
 class Place(Base):
     __tablename__ = "places"
@@ -66,8 +64,5 @@ class Place(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
-
     # Relación con EmployeeRegister
     employee_registers = relationship("EmployeeRegister", back_populates="place", cascade="all, delete")
-
-
